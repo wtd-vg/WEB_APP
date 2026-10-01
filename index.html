@@ -1,0 +1,1195 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Sổ tay backend SchoolFood</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Bố cục: mục lục dính bên trái + cột đọc ~72ch; điện thoại: mục lục thành dải chip phía trên. */
+:root{
+  --bg:#FFF8EC; --surface:#FFFFFF; --sunken:#F6EEDF; --ink:#2A2522; --muted:#6B5F55; --line:#EADFC9;
+  --brand:#FFC93C; --brand-ink:#2A2522; --accent:#8C3B1E; --link:#1D4F87; --src-bg:#FFF6E0;
+  --code-bg:#2A2522; --code-fg:#F6EEDF; --code-dim:#B9AC98; --hit:#FFE9BF;
+  --display:'Baloo 2',ui-rounded,system-ui,sans-serif; --body:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'Cascadia Code',Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1A1613; --surface:#231E1A; --sunken:#2C2520; --ink:#F2EBE1; --muted:#B7AA99; --line:#3B332C;
+  --brand:#FFC93C; --brand-ink:#2A2522; --accent:#E8A27A; --link:#9CC3EE; --src-bg:#2A231C;
+  --code-bg:#110E0C; --code-fg:#EDE4D6; --code-dim:#9C907F; --hit:#4A3B1C; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1A1613; --surface:#231E1A; --sunken:#2C2520; --ink:#F2EBE1; --muted:#B7AA99; --line:#3B332C;
+  --brand:#FFC93C; --brand-ink:#2A2522; --accent:#E8A27A; --link:#9CC3EE; --src-bg:#2A231C;
+  --code-bg:#110E0C; --code-fg:#EDE4D6; --code-dim:#9C907F; --hit:#4A3B1C; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16.5px/1.7 var(--body);margin:0}
+a{color:var(--link)}
+code{font-family:var(--mono);font-size:.86em;background:var(--sunken);padding:.1em .38em;border-radius:6px;overflow-wrap:anywhere}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px}
+header.top{padding-block:48px 28px}
+.kicker{font:700 13px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(38px,6vw,64px)/1.02 var(--display);margin:.25em 0 .2em;letter-spacing:-.5px;text-wrap:balance}
+h1 .mark{background:linear-gradient(transparent 62%,var(--brand) 62%);padding:0 .08em}
+.lead{max-width:68ch;color:var(--muted);font-size:18px;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.meta span{font:600 13px/1 var(--body);padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+.tools{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-block:12px}
+.tools .wrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.search{flex:1 1 280px;display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:0 14px}
+.search:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 35%,transparent)}
+.search input{flex:1;border:0;background:transparent;color:var(--ink);font:500 16px var(--body);padding:12px 0;outline:none;min-width:0}
+.search svg{flex:none;color:var(--muted)}
+#count{font:600 14px var(--body);color:var(--muted);font-variant-numeric:tabular-nums}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;padding-block:28px 80px}
+nav.toc{position:sticky;top:84px;align-self:start;max-height:calc(100vh - 100px);overflow:auto}
+.toc h2{font:700 12px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.toc a{display:grid;grid-template-columns:26px 1fr auto;gap:8px;align-items:baseline;text-decoration:none;color:var(--ink);padding:7px 10px;border-radius:10px;font:500 14.5px/1.35 var(--body)}
+.toc a:hover{background:var(--sunken)}
+.toc a:focus-visible{outline:3px solid var(--link);outline-offset:1px}
+.toc .ci{font:800 15px var(--display);color:var(--accent)}
+.toc .cc{font:600 12px var(--body);color:var(--muted);font-variant-numeric:tabular-nums}
+.toc li.empty a{opacity:.4}
+main{min-width:0}
+section.ch{scroll-margin-top:90px;margin-bottom:56px}
+.ch-head{border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:8px}
+.ch-head .eyebrow{display:flex;gap:10px;align-items:center;font:700 13px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.ch-head .eyebrow .range{color:var(--muted);letter-spacing:.04em;text-transform:none;font-weight:600}
+.ch-head h2{font:800 clamp(28px,4vw,38px)/1.1 var(--display);margin:.3em 0 .15em;text-wrap:balance}
+.ch-head p{margin:0;color:var(--muted);max-width:70ch}
+article.q{display:grid;grid-template-columns:48px minmax(0,1fr);gap:18px;padding-block:26px;border-bottom:1px solid var(--line);scroll-margin-top:90px}
+article.q[hidden]{display:none!important}
+.n{width:44px;height:44px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:flex;align-items:center;justify-content:center;font:800 18px/1 var(--display);font-variant-numeric:tabular-nums}
+.qbody{min-width:0}
+.qbody h3{font:700 clamp(20px,2.4vw,23px)/1.3 var(--display);margin:2px 0 10px;text-wrap:balance}
+.qbody p{margin:0 0 12px;max-width:72ch}
+.codebox{margin:14px 0 12px;border-radius:14px;overflow:hidden;background:var(--code-bg)}
+.codebox .lbl{font:600 12px/1 var(--mono);color:var(--code-dim);padding:11px 16px;border-bottom:1px solid color-mix(in srgb,var(--code-fg) 12%,transparent)}
+.codebox pre{margin:0;padding:14px 16px;overflow-x:auto;color:var(--code-fg);font:400 13.5px/1.6 var(--mono);tab-size:4}
+.codebox pre code{background:none;padding:0;font-size:inherit;color:inherit}
+pre.mermaid{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;overflow-x:auto;margin:14px 0}
+.src{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font:500 14px/1.5 var(--body);color:var(--muted);background:var(--src-bg);border-radius:10px;padding:9px 12px;margin-top:4px}
+.src b{font:700 11.5px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);flex:none}
+.src span{font-family:var(--mono);font-size:13px;overflow-wrap:anywhere;min-width:0}
+mark{background:var(--hit);color:inherit;border-radius:3px;padding:0 1px}
+.none{display:none;padding:40px 0;color:var(--muted);font-size:18px}
+.none.show{display:block}
+footer{border-top:1px solid var(--line);padding-block:24px 40px;color:var(--muted);font-size:14px}
+@media (max-width:900px){
+  .layout{grid-template-columns:minmax(0,1fr);gap:20px;padding-block:18px 60px}
+  nav.toc{position:static;max-height:none;overflow:visible}
+  .toc ol{flex-direction:row;flex-wrap:wrap;gap:6px}
+  .toc a{display:inline-flex;gap:6px;border:1px solid var(--line);background:var(--surface);padding:6px 10px;font-size:13.5px}
+  .toc .cc{display:none}
+  article.q{grid-template-columns:minmax(0,1fr);gap:10px}
+  .n{width:38px;height:38px;font-size:16px}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+<header class="top"><div class="wrap">
+<div class="kicker">SchoolFood · Backend · Bảo mật · Deploy</div>
+<h1>Sổ tay <span class="mark">backend</span> SchoolFood</h1>
+<p class="lead">100 câu hỏi đi theo đúng trình tự học: từ bức tranh tổng thể, dữ liệu, nghiệp vụ, tới đăng nhập, bảo mật, gửi thư, kiểm thử và triển khai lên máy chủ. Mỗi câu trả lời dùng lời dễ hiểu, kèm dẫn chứng là file thật trong repo và đoạn code minh họa. Đọc lần lượt từ câu 1 là nắm được toàn bộ hệ thống.</p>
+<div class="meta"><span>10 chương · 100 câu</span><span>Code: <code>dev1</code> sau PR #50</span><span>Cập nhật 01/10/2026</span><span>Gõ <code>/</code> để tìm nhanh</span></div>
+</div></header>
+<div class="tools"><div class="wrap"><label class="search" for="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search" type="search" placeholder="Tìm: csrf, decimal, khóa đăng nhập, backup, câu 46…" autocomplete="off"></label><span id="count">100 câu hỏi</span></div></div>
+<div class="wrap layout">
+<nav class="toc" aria-label="Mục lục"><h2>Mục lục</h2><ol>
+<li data-ch="ch1"><a href="#ch1"><span class="ci">1</span><span>Bức tranh tổng thể</span><span class="cc">8</span></a></li>
+<li data-ch="ch2"><a href="#ch2"><span class="ci">2</span><span>Dữ liệu và cơ sở dữ liệu</span><span class="cc">12</span></a></li>
+<li data-ch="ch3"><a href="#ch3"><span class="ci">3</span><span>Nghiệp vụ và chuyện nhiều người cùng thao tác</span><span class="cc">16</span></a></li>
+<li data-ch="ch4"><a href="#ch4"><span class="ci">4</span><span>Kiểm tra dữ liệu gửi lên và trả lỗi</span><span class="cc">7</span></a></li>
+<li data-ch="ch5"><a href="#ch5"><span class="ci">5</span><span>Đăng nhập và phân quyền</span><span class="cc">12</span></a></li>
+<li data-ch="ch6"><a href="#ch6"><span class="ci">6</span><span>Chống dò mật khẩu và giữ phiên an toàn</span><span class="cc">9</span></a></li>
+<li data-ch="ch7"><a href="#ch7"><span class="ci">7</span><span>Bảo vệ dữ liệu cá nhân và nhật ký thao tác</span><span class="cc">10</span></a></li>
+<li data-ch="ch8"><a href="#ch8"><span class="ci">8</span><span>Gửi email và việc chạy nền</span><span class="cc">7</span></a></li>
+<li data-ch="ch9"><a href="#ch9"><span class="ci">9</span><span>Kiểm thử</span><span class="cc">6</span></a></li>
+<li data-ch="ch10"><a href="#ch10"><span class="ci">10</span><span>Triển khai lên máy chủ và vận hành</span><span class="cc">13</span></a></li>
+</ol></nav><main>
+<section class="ch" id="ch1"><div class="ch-head"><div class="eyebrow">Chương 1<span class="range">Câu 1–8</span></div><h2>Bức tranh tổng thể</h2><p>Biết hệ thống gồm những phần nào, code nằm ở đâu và một yêu cầu đi qua những chặng nào.</p></div>
+<article class="q" id="cau-1" data-n="1"><div class="n">1</div><div class="qbody"><h3>SchoolFood giải quyết bài toán gì, và backend chịu trách nhiệm phần nào?</h3>
+<p>SchoolFood quản lý <b>kho thực phẩm và bữa trưa bán trú</b> cho một trường, một kho: nhập hàng, xuất cho bếp, kiểm kê, số suất theo lớp, thực đơn, tính nhu cầu nguyên liệu, đặt hàng nhà cung cấp, chi phí mỗi suất và thư thực đơn gửi phụ huynh.</p>
+<p>Frontend chỉ hiển thị và gửi yêu cầu. <b>Backend giữ dữ liệu và quyết định mọi con số quan trọng</b>: tồn kho, giá vốn, nhu cầu, chi phí. Nó cũng kiểm tra quyền, chặn thao tác sai và gửi email.</p>
+<p>Nguyên tắc xuyên suốt: không tin con số do trình duyệt gửi lên. Ví dụ khi xuất kho, client không gửi giá vốn; backend tự chụp giá bình quân đúng lúc chốt phiếu.</p>
+<div class="codebox"><div class="lbl">Python · models.py</div><pre><code># backend/apps/inventory/models.py — IssueLine
+# Client không gửi giá vốn. Nháp = 0; post_issue chụp avg_cost của food lúc chốt.
+unit_cost = models.DecimalField(max_digits=14, decimal_places=2, default=0, editable=False)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §1; backend/apps/inventory/models.py (IssueLine)</span></div>
+</div></article>
+<article class="q" id="cau-2" data-n="2"><div class="n">2</div><div class="qbody"><h3>Backend dùng công nghệ gì, và vì sao chọn như vậy?</h3>
+<p><b>Django 5.2</b> (Python) có sẵn đăng nhập, phiên, trang quản trị và công cụ migration. Nhóm không phải tự viết lại những thứ dễ sai về bảo mật.</p>
+<p><b>PostgreSQL 17</b> hỗ trợ khóa từng dòng khi nhiều người cùng sửa, ràng buộc dữ liệu và trigger viết bằng PL/pgSQL. <b>psycopg 3</b> là thư viện để Python nói chuyện với PostgreSQL. <b>gunicorn</b> chạy Django trên máy chủ thật.</p>
+<p>API viết bằng hàm view trả <code>JsonResponse</code>, không dùng Django REST Framework. Ít lớp trung gian thì người mới đọc code dễ hơn. Thư viện mới chỉ được thêm khi chủ dự án duyệt: <code>cryptography</code> để mã hóa email, <code>Pillow</code> để xử lý ảnh.</p>
+<div class="codebox"><div class="lbl">requirements.txt</div><pre><code># backend/requirements.txt
+Django==5.2.17
+psycopg[binary]==3.3.5
+gunicorn==23.0.0
+cryptography==46.0.3   # mã hóa email phụ huynh
+Pillow==12.0.0         # nén ảnh suất ăn</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/requirements.txt; CLAUDE.md §2</span></div>
+</div></article>
+<article class="q" id="cau-3" data-n="3"><div class="n">3</div><div class="qbody"><h3>Frontend và backend nói chuyện với nhau như thế nào?</h3>
+<p>Frontend là ứng dụng React một trang (SPA). Mỗi khi cần dữ liệu, nó gọi một địa chỉ bắt đầu bằng <code>/api/</code> bằng <code>fetch</code>, gửi và nhận <b>JSON</b>.</p>
+<p>Sau khi đăng nhập, trình duyệt giữ cookie phiên <code>sessionid</code> và tự gửi kèm mọi yêu cầu. Yêu cầu ghi dữ liệu gửi thêm header <code>X-CSRFToken</code> (giải thích ở câu 46).</p>
+<p>Frontend và API dùng <b>cùng một tên miền</b>, nên không cần mở CORS. Ở máy dev, Vite chuyển <code>/api</code> sang Django. Trên production, nginx chuyển <code>/api</code> sang gunicorn.</p>
+<div class="codebox"><div class="lbl">TypeScript · utils/api.ts</div><pre><code>// frontend/src/utils/api.ts
+export async function fetchApi(url: string, options: RequestInit = {}) {
+  const headers = new Headers(options.headers || {});
+  headers.set(&#x27;X-CSRFToken&#x27;, getCookie(&#x27;csrftoken&#x27;));
+  if (!(options.body instanceof FormData)) headers.set(&#x27;Content-Type&#x27;, &#x27;application/json&#x27;);
+  const response = await fetch(url, { ...options, headers, credentials: &#x27;include&#x27; });
+  if (response.status === 401) window.dispatchEvent(new Event(&#x27;session-expired&#x27;));
+  return response;
+}</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>frontend/src/utils/api.ts; deploy/nginx.conf (location /api/)</span></div>
+</div></article>
+<article class="q" id="cau-4" data-n="4"><div class="n">4</div><div class="qbody"><h3>Code backend được sắp xếp ra sao?</h3>
+<p>Toàn bộ nghiệp vụ nằm trong một app Django: <code>backend/apps/inventory</code>. Mỗi nghiệp vụ có file riêng, đặt tên theo vai trò.</p>
+<p><b>Quy tắc dễ nhớ:</b> file <code>*_services.py</code> chứa luật nghiệp vụ, file <code>*_views.py</code> chứa phần HTTP. <code>models.py</code> mô tả bảng, <code>migrations/</code> ghi lịch sử thay đổi bảng, <code>test_*.py</code> là kiểm thử.</p>
+<div class="codebox"><div class="lbl">Cây thư mục</div><pre><code>backend/
+  schoolfood/settings.py        cấu hình (đọc biến môi trường)
+  apps/inventory/
+    models.py, migrations/       bảng dữ liệu + trigger
+    services.py, lunch.py        chốt nhập/xuất/kiểm kê, ngày ăn
+    menu_services.py, demand_services.py, purchase_services.py, day_services.py
+    *_views.py, urls.py          API HTTP
+    http_input.py                kiểm tra dữ liệu gửi lên
+    auth_views.py, throttle.py, session_security.py   đăng nhập, khóa, phiên
+    audit.py, crypto_fields.py   nhật ký, mã hóa email
+    notifications.py, mailer.py  thư phụ huynh
+    management/commands/         lệnh: run_scheduler, seed_sample, sf31_ledger_audit...
+    test_*.py                    kiểm thử</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §2 (bản đồ code)</span></div>
+</div></article>
+<article class="q" id="cau-5" data-n="5"><div class="n">5</div><div class="qbody"><h3>Một yêu cầu từ trình duyệt đi qua những chặng nào trước khi chạm tới cơ sở dữ liệu?</h3>
+<p>Mỗi chặng có một việc riêng. Cloudflare lo HTTPS và chặn bớt tấn công. nginx phục vụ giao diện và chuyển API sang Django. Middleware của Django đọc phiên, kiểm tra CSRF và giới hạn tuổi phiên. Decorator kiểm tra quyền. View đọc dữ liệu gửi lên. Service làm nghiệp vụ trong transaction. PostgreSQL chặn lần cuối bằng ràng buộc và trigger.</p>
+<p>Hiểu đường đi này thì gặp lỗi sẽ biết tìm ở đâu. Lỗi 403 có thể do thiếu CSRF (middleware) hoặc thiếu quyền (decorator). Lỗi 409 thường do service phát hiện xung đột.</p>
+<pre class="mermaid">flowchart LR
+  B[Trình duyệt] --&gt; CF[Cloudflare HTTPS]
+  CF --&gt; T[cloudflared]
+  T --&gt; N[nginx: SPA + /api]
+  N --&gt; G[gunicorn]
+  G --&gt; M[Middleware: phiên, CSRF, 12 giờ]
+  M --&gt; D[Decorator quyền]
+  D --&gt; V[View: đọc + kiểm tra input]
+  V --&gt; S[Service: transaction + khóa]
+  S --&gt; P[(PostgreSQL: ràng buộc + trigger)]</pre>
+<div class="src"><b>Dẫn chứng</b><span>backend/schoolfood/settings.py (MIDDLEWARE); deploy/nginx.conf; compose.prod.yaml</span></div>
+</div></article>
+<article class="q" id="cau-6" data-n="6"><div class="n">6</div><div class="qbody"><h3>Vì sao tách view và service thay vì viết hết trong một hàm?</h3>
+<p><b>View</b> lo phần HTTP: đọc JSON, kiểm tra kiểu dữ liệu, gọi service, ghi nhật ký, trả JSON. <b>Service</b> chỉ lo luật nghiệp vụ: khóa dữ liệu, tính toán, ghi sổ kho.</p>
+<p>Tách như vậy thì một service dùng được ở nhiều nơi: API, lệnh quản trị (như <code>seed_sample</code> gọi chính <code>post_receipt</code> để nạp dữ liệu mẫu đúng sổ kho), và test. Luật chỉ viết ở một chỗ nên không bị lệch.</p>
+<div class="codebox"><div class="lbl">Python · purchase_views.py</div><pre><code># backend/apps/inventory/purchase_views.py
+with transaction.atomic():
+    order = ps.create(supplier_id, expected, lines, request.user, note)   # service
+    audit.record(request, &quot;po_create&quot;, &quot;purchase_order&quot;, order.id, f&quot;Tạo đơn {order.code}&quot;)
+return JsonResponse(ps.order_payload(_orders().get(id=order.id)), status=201)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/purchase_views.py; purchase_services.py</span></div>
+</div></article>
+<article class="q" id="cau-7" data-n="7"><div class="n">7</div><div class="qbody"><h3>Cấu hình nằm ở đâu, và DEBUG nghĩa là gì?</h3>
+<p>Mọi cấu hình nằm trong <code>settings.py</code> và được đọc từ <b>biến môi trường</b>, nên cùng một code chạy được ở máy dev lẫn máy chủ.</p>
+<p><code>DEBUG=True</code> (mặc định khi dev) hiện lỗi chi tiết để sửa nhanh. Trên production phải đặt <code>DEBUG=False</code>; khi đó Django <b>từ chối khởi động</b> nếu thiếu cấu hình an toàn: SECRET_KEY quá ngắn, ALLOWED_HOSTS rỗng hoặc là <code>*</code>, thiếu khóa mã hóa. Cách này gọi là "hỏng sớm": thà không chạy còn hơn chạy với cấu hình yếu.</p>
+<div class="codebox"><div class="lbl">Python · settings.py</div><pre><code># backend/schoolfood/settings.py
+if DEBUG:
+    SECRET_KEY = os.getenv(&quot;SECRET_KEY&quot;, &quot;local-development-only&quot;)
+else:
+    SECRET_KEY = os.getenv(&quot;SECRET_KEY&quot;, &quot;&quot;)
+    if len(SECRET_KEY) &lt; 50:
+        raise ImproperlyConfigured(&quot;DEBUG=False cần biến môi trường SECRET_KEY dài ít nhất 50 ký tự.&quot;)
+    ALLOWED_HOSTS = _env_list(&quot;ALLOWED_HOSTS&quot;)
+    if not ALLOWED_HOSTS or &quot;*&quot; in ALLOWED_HOSTS:
+        raise ImproperlyConfigured(&quot;DEBUG=False cần ALLOWED_HOSTS là danh sách domain cụ thể, không dùng &#x27;*&#x27;.&quot;)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/schoolfood/settings.py</span></div>
+</div></article>
+<article class="q" id="cau-8" data-n="8"><div class="n">8</div><div class="qbody"><h3>API trả lỗi theo quy ước nào?</h3>
+<p>Mọi lỗi có cùng dạng: <code>{"message": "câu tiếng Việt", "errors": {"tên_trường": "lý do"}}</code>. Giao diện hiện <code>message</code> ở đầu form và tô đỏ đúng ô theo <code>errors</code>.</p>
+<p>Mã HTTP có ý nghĩa cố định: <b>400</b> dữ liệu sai; <b>401</b> chưa đăng nhập hoặc hết phiên; <b>403</b> không có quyền hoặc thiếu CSRF; <b>404</b> không tìm thấy; <b>405</b> sai phương thức; <b>409</b> xung đột (người khác vừa sửa, trạng thái không cho phép); <b>429</b> đăng nhập bị khóa tạm. Lỗi không bao giờ kèm traceback.</p>
+<div class="codebox"><div class="lbl">Ví dụ phản hồi</div><pre><code>HTTP/1.1 400 Bad Request
+{
+  &quot;message&quot;: &quot;Số lượng dòng 1 chỉ được tối đa 3 chữ số lẻ.&quot;,
+  &quot;errors&quot;: { &quot;lines[0].quantity&quot;: &quot;Tối đa 3 chữ số sau dấu thập phân.&quot; }
+}</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/http_input.py (error, InputError, Conflict); CLAUDE.md §5.3</span></div>
+</div></article>
+</section>
+<section class="ch" id="ch2"><div class="ch-head"><div class="eyebrow">Chương 2<span class="range">Câu 9–20</span></div><h2>Dữ liệu và cơ sở dữ liệu</h2><p>Hiểu dữ liệu được lưu thế nào, vì sao dùng Decimal, sổ kho là gì và cơ sở dữ liệu tự bảo vệ ra sao.</p></div>
+<article class="q" id="cau-9" data-n="9"><div class="n">9</div><div class="qbody"><h3>Vì sao dùng PostgreSQL mà không dùng SQLite cho gọn?</h3>
+<p>Dự án cần ba thứ SQLite không làm tốt: <b>khóa từng dòng</b> (<code>SELECT ... FOR UPDATE</code>) khi hai người cùng chốt phiếu, <b>trigger PL/pgSQL</b> để chặn sửa dữ liệu đã chốt, và chịu được nhiều kết nối cùng lúc.</p>
+<p>Vì logic an toàn nằm một phần trong PostgreSQL, <b>test bắt buộc chạy trên PostgreSQL thật</b>; chạy trên SQLite sẽ bỏ sót đúng những lỗi quan trọng nhất.</p>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §2 (&quot;Trigger PL/pgSQL nên test bắt buộc chạy trên PostgreSQL&quot;)</span></div>
+</div></article>
+<article class="q" id="cau-10" data-n="10"><div class="n">10</div><div class="qbody"><h3>Những bảng chính là gì, và chúng liên quan với nhau thế nào?</h3>
+<p>Có thể chia thành bảy nhóm:</p>
+<p><b>Danh mục:</b> Category, FoodItem (mặt hàng, có tồn và giá bình quân), Supplier. <b>Chứng từ kho:</b> Receipt/ReceiptLine (nhập), Issue/IssueLine (xuất), StockTake/StockTakeItem (kiểm kê). <b>Sổ kho:</b> StockTransaction.</p>
+<p><b>Bữa trưa:</b> SchoolClass, LunchDay, ClassMealCount, LunchDayEvent. <b>Món và thực đơn:</b> Dish, RecipeComponent, MenuVersion/MenuVersionItem, SchoolHoliday, DayMenuSnapshot, MealPhoto. <b>Chuỗi mua hàng:</b> DemandRevision/DemandLine, PurchaseOrder/PurchaseOrderLine, StockAllocation, LunchDayClose.</p>
+<p><b>Phụ huynh và bảo mật:</b> Student, ParentContact, NotificationLog, LoginThrottle, AuditLog.</p>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/models.py</span></div>
+</div></article>
+<article class="q" id="cau-11" data-n="11"><div class="n">11</div><div class="qbody"><h3>Migration là gì, và có những quy tắc nào khi sửa bảng?</h3>
+<p>Migration là file mô tả <b>từng bước thay đổi cấu trúc bảng</b>, chạy theo thứ tự 0001 → 0021. Nhờ vậy DB ở máy dev và DB thật luôn được nâng cấp giống nhau.</p>
+<p><b>Quy tắc:</b> đổi bảng thì tạo migration mới; không sửa migration đã merge; không dùng <code>--fake</code> một cách mù quáng. Migration phải chạy thử trên cả DB trống lẫn DB đang có dữ liệu. Trên production, <code>npm run ec2:migrate</code> luôn sao lưu DB trước khi chạy.</p>
+<p>DB cũ không nâng cấp được bình thường thì dùng lệnh <code>sf_legacy_db_check</code> để chẩn đoán trước khi xử lý.</p>
+<div class="codebox"><div class="lbl">Lệnh</div><pre><code>python manage.py makemigrations --check --dry-run   # báo lỗi nếu model đổi mà quên tạo migration
+python manage.py migrate
+npm run ec2:migrate      # production: pg_dump trước, rồi migrate</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §5.3 (Migration); package.json (ec2:migrate); management/commands/sf_legacy_db_check.py</span></div>
+</div></article>
+<article class="q" id="cau-12" data-n="12"><div class="n">12</div><div class="qbody"><h3>Sổ kho StockTransaction là gì?</h3>
+<p>Mỗi lần tồn kho thay đổi, hệ thống ghi đúng <b>một dòng vào sổ kho</b>: loại <code>IN</code> (nhập), <code>OUT</code> (xuất) hoặc <code>ADJUST</code> (kiểm kê). Mỗi dòng có lượng thay đổi, đơn giá và giá trị.</p>
+<p>Ví dụ: chốt phiếu nhập 13 kg thịt giá 135.000 đ/kg tạo một dòng IN với <code>quantity_delta = 13.000</code> và <code>value_delta = 1.755.000</code>.</p>
+<p>Sổ kho <b>chỉ được ghi thêm</b>, không sửa, không xóa. Muốn sửa sai thì ghi một bút toán mới (ví dụ kiểm kê). Đây là cách kế toán giữ được lịch sử.</p>
+<div class="codebox"><div class="lbl">Python · models.py</div><pre><code>class StockTransaction(models.Model):
+    class Type(models.TextChoices):
+        IN = &quot;IN&quot;, &quot;Nhập&quot;
+        OUT = &quot;OUT&quot;, &quot;Xuất&quot;
+        ADJUST = &quot;ADJUST&quot;, &quot;Kiểm kê&quot;
+    food = models.ForeignKey(FoodItem, on_delete=models.PROTECT)
+    type = models.CharField(max_length=6, choices=Type.choices)
+    quantity_delta = models.DecimalField(max_digits=14, decimal_places=3)
+    unit_cost = models.DecimalField(max_digits=14, decimal_places=2)
+    value_delta = models.DecimalField(max_digits=28, decimal_places=2)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/models.py (StockTransaction)</span></div>
+</div></article>
+<article class="q" id="cau-13" data-n="13"><div class="n">13</div><div class="qbody"><h3>Đã có sổ kho, sao FoodItem vẫn lưu số tồn? Hai nơi lệch nhau thì sao?</h3>
+<p><code>FoodItem.quantity</code> giúp <b>đọc tồn hiện tại nhanh</b> mà không phải cộng cả nghìn dòng sổ. Sổ kho giữ <b>lịch sử đầy đủ</b>. Cả hai luôn được cập nhật trong cùng một transaction nên không thể chỉ đổi một bên.</p>
+<p>Để chắc chắn, lệnh <code>sf31_ledger_audit --strict</code> so sánh tồn của từng mặt hàng với tổng lượng thay đổi trong sổ và báo lỗi nếu lệch. Lệnh này chạy sau mỗi lần deploy.</p>
+<div class="codebox"><div class="lbl">Kết quả thật trên production (01/10/2026)</div><pre><code>$ npm run ec2:ledger-audit
+StockTransaction: 122 bút toán
+InventoryLedger (legacy, không còn ghi): 0
+Tồn kho khớp sổ kho cho mọi thực phẩm.</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/management/commands/sf31_ledger_audit.py</span></div>
+</div></article>
+<article class="q" id="cau-14" data-n="14"><div class="n">14</div><div class="qbody"><h3>Vì sao tiền và số lượng dùng Decimal mà không dùng số thực (float)?</h3>
+<p>Máy tính lưu float ở hệ nhị phân, nên nhiều số thập phân quen thuộc <b>không biểu diễn chính xác được</b>. Cộng dồn hàng nghìn lần sẽ ra số lệch vài đồng, vài gram.</p>
+<p>Vì vậy backend dùng <code>Decimal</code>, và JSON gửi số dưới dạng <b>chuỗi</b> (như <code>"12.500"</code>) để không bị JavaScript đổi thành float giữa đường.</p>
+<div class="codebox"><div class="lbl">Python</div><pre><code>&gt;&gt;&gt; 0.1 + 0.2
+0.30000000000000004
+&gt;&gt;&gt; from decimal import Decimal
+&gt;&gt;&gt; Decimal(&quot;0.1&quot;) + Decimal(&quot;0.2&quot;)
+Decimal(&#x27;0.3&#x27;)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §5.3 (Decimal)</span></div>
+</div></article>
+<article class="q" id="cau-15" data-n="15"><div class="n">15</div><div class="qbody"><h3>Mỗi loại số được lưu với bao nhiêu chữ số?</h3>
+<p><b>Số lượng:</b> Decimal(14,3), tức chính xác tới 1 gram khi đơn vị là kg. <b>Đơn giá:</b> Decimal(14,2). <b>Giá trị dòng:</b> Decimal(28,2), đủ chỗ cho lượng lớn nhân đơn giá lớn.</p>
+<p><b>Định lượng món cho một suất:</b> Decimal(14,6), vì 0,4 g muối = 0.000400 kg. Nếu chỉ giữ 3 số lẻ, con số này thành 0 và 300 suất cũng ra 0. Đây là lỗi ISSUE-003 đã được sửa.</p>
+<div class="codebox"><div class="lbl">Python · models.py</div><pre><code>class RecipeComponent(models.Model):
+    &quot;&quot;&quot;Định lượng cho MỘT suất, theo đơn vị chuẩn của food. 6 số lẻ (BE-03/ISSUE-003):
+    0,4 g = 0.000400 kg không bị làm tròn thành 0 trước khi nhân số suất.&quot;&quot;&quot;
+    quantity = models.DecimalField(max_digits=14, decimal_places=6)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/models.py (RecipeComponent); CLAUDE.md §5.3</span></div>
+</div></article>
+<article class="q" id="cau-16" data-n="16"><div class="n">16</div><div class="qbody"><h3>Làm tròn thế nào cho đúng?</h3>
+<p>Dự án luôn dùng <code>quantize(..., ROUND_HALF_UP)</code>, tức làm tròn "5 lên" như học ở trường.</p>
+<p><b>Không dùng hàm <code>round()</code> của Python</b>, vì nó làm tròn kiểu ngân hàng: số đúng 0,5 được làm tròn về số chẵn gần nhất. Kết quả đó khác với cách kế toán của trường.</p>
+<div class="codebox"><div class="lbl">Python</div><pre><code>&gt;&gt;&gt; round(2.5), round(3.5)
+(2, 4)                       # làm tròn về số chẵn: dễ gây lệch
+from decimal import Decimal, ROUND_HALF_UP
+def money(value):            # services.py
+    return Decimal(value).quantize(Decimal(&quot;0.01&quot;), rounding=ROUND_HALF_UP)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/services.py (money, line_value); docstring post_receipt</span></div>
+</div></article>
+<article class="q" id="cau-17" data-n="17"><div class="n">17</div><div class="qbody"><h3>Ràng buộc (constraint) trong cơ sở dữ liệu là gì?</h3>
+<p>Là luật đặt <b>ngay trong bảng</b>. Bất kể ai ghi dữ liệu và ghi bằng cách nào, PostgreSQL đều từ chối dữ liệu sai.</p>
+<p>Ví dụ: tồn kho không được âm; một phiếu không được có hai dòng cùng mặt hàng; mỗi email chỉ nhận một thư mỗi ngày. Nếu code có lỗi và quên kiểm tra, DB vẫn chặn được.</p>
+<div class="codebox"><div class="lbl">Python · models.py</div><pre><code>constraints = [
+    models.CheckConstraint(condition=models.Q(quantity__gte=0, quantity__lt=Decimal(&quot;100000000000&quot;)),
+                           name=&quot;food_quantity_nonnegative&quot;),
+]
+# NotificationLog: mỗi email một thư mỗi ngày
+models.UniqueConstraint(fields=[&quot;date&quot;, &quot;email_hash&quot;], name=&quot;notification_unique_per_day&quot;)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/models.py (FoodItem, NotificationLog)</span></div>
+</div></article>
+<article class="q" id="cau-18" data-n="18"><div class="n">18</div><div class="qbody"><h3>Trigger là gì? Cho một ví dụ trong dự án.</h3>
+<p>Trigger là đoạn code chạy <b>bên trong PostgreSQL</b>, tự động mỗi khi có lệnh INSERT, UPDATE hoặc DELETE trên một bảng. Nó dùng để chặn những thay đổi trái luật.</p>
+<p>Ví dụ: trigger của sổ kho chỉ cho thêm dòng mới, không cho sửa hay xóa. Có ai lén chạy <code>UPDATE</code> trực tiếp bằng SQL thì vẫn bị chặn.</p>
+<div class="codebox"><div class="lbl">SQL · migration 0006</div><pre><code>CREATE FUNCTION sf19_protect_ledger() RETURNS trigger AS $$
+BEGIN
+    IF TG_OP &lt;&gt; &#x27;INSERT&#x27; THEN
+        RAISE EXCEPTION &#x27;Stock ledger is append-only&#x27;
+            USING ERRCODE = &#x27;23514&#x27;, CONSTRAINT = &#x27;stock_ledger_read_only&#x27;;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER sf19_protect_stock_transaction
+BEFORE INSERT OR UPDATE OR DELETE ON inventory_stocktransaction
+FOR EACH ROW EXECUTE FUNCTION sf19_protect_ledger();</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/migrations/0006_receipt_integrity.py</span></div>
+</div></article>
+<article class="q" id="cau-19" data-n="19"><div class="n">19</div><div class="qbody"><h3>Những dữ liệu nào đang được trigger bảo vệ?</h3>
+<p><b>Phiếu nhập, xuất, kiểm kê đã chốt</b> và các dòng của chúng: không sửa, không xóa (0006, 0009, 0011). <b>Sổ kho</b>: chỉ thêm (0006, 0009).</p>
+<p><b>Ngày ăn</b>: mỗi lần sửa phải tăng <code>version</code> đúng 1 (0013). <b>Thực đơn đã có hiệu lực</b> và <b>bản chụp thực đơn theo ngày</b>: không đổi được (0016). <b>Mỗi bé</b> tối đa 2 email (0018).</p>
+<p><b>Nhật ký thao tác</b>: chỉ thêm (0014). <b>Chuỗi nhu cầu, đơn đặt, phần hàng đã giữ</b>: chặn trạng thái sai (0020).</p>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/migrations/0006, 0009, 0011, 0013, 0014, 0016, 0018, 0020</span></div>
+</div></article>
+<article class="q" id="cau-20" data-n="20"><div class="n">20</div><div class="qbody"><h3>Code đã kiểm tra rồi, sao còn phải chặn thêm trong cơ sở dữ liệu?</h3>
+<p>Hai lớp có hai việc khác nhau. <b>Code</b> kiểm tra trước để trả câu báo lỗi tiếng Việt dễ hiểu (400/409). <b>Cơ sở dữ liệu</b> là lưới an toàn cuối, chặn cả những đường đi vòng: trang /admin, lệnh SQL gõ tay, hoặc một lỗi code chưa ai phát hiện.</p>
+<p>Khi trigger chặn, PostgreSQL trả mã lỗi <code>23514</code>, Django nhận thành <code>IntegrityError</code>, và transaction hoàn tác toàn bộ. Test kiểm tra lớp này bằng cách cố tình sửa thẳng vào DB và mong đợi lỗi.</p>
+<div class="codebox"><div class="lbl">Python · ý tưởng test</div><pre><code># test (TransactionTestCase): sửa thẳng sổ kho phải bị trigger chặn
+with self.assertRaises(IntegrityError):
+    StockTransaction.objects.filter(pk=tx.pk).update(quantity_delta=Decimal(&quot;999&quot;))</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §5.2 (Concurrency/trigger dùng TransactionTestCase)</span></div>
+</div></article>
+</section>
+<section class="ch" id="ch3"><div class="ch-head"><div class="eyebrow">Chương 3<span class="range">Câu 21–36</span></div><h2>Nghiệp vụ và chuyện nhiều người cùng thao tác</h2><p>Hiểu nháp/chốt, transaction, khóa dữ liệu, và cách chuỗi bữa trưa tính từ số suất tới chi phí mỗi suất.</p></div>
+<article class="q" id="cau-21" data-n="21"><div class="n">21</div><div class="qbody"><h3>&quot;Nháp&quot; và &quot;chốt&quot; khác nhau thế nào?</h3>
+<p>Phiếu <b>nháp</b> chỉ là bản ghi chờ: sửa thoải mái và <b>không làm thay đổi tồn kho</b>.</p>
+<p><b>Chốt</b> là việc làm một lần: cập nhật tồn, ghi sổ kho, chuyển trạng thái sang <code>posted</code>. Sau đó phiếu chỉ đọc được, và trigger chặn mọi thao tác sửa. Nhập sai thì làm phiếu mới hoặc kiểm kê, không sửa phiếu cũ.</p>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §5.3 (Nháp và chốt); migrations 0006/0009 (protect posted)</span></div>
+</div></article>
+<article class="q" id="cau-22" data-n="22"><div class="n">22</div><div class="qbody"><h3>Khi chốt một phiếu nhập, backend làm những bước nào?</h3>
+<p><b>1.</b> Khóa đầu phiếu và kiểm tra phiếu còn ở trạng thái nháp. <b>2.</b> Khóa các mặt hàng theo id tăng dần. <b>3.</b> Với từng dòng: cộng tồn, tính lại giá bình quân, tăng <code>stock_version</code>, ghi một dòng IN vào sổ kho. <b>4.</b> Đổi phiếu sang <code>posted</code>.</p>
+<p>Tất cả chạy trong một <code>transaction.atomic</code>: lỗi ở bất kỳ bước nào thì không có gì được lưu.</p>
+<div class="codebox"><div class="lbl">Python · services.py (rút gọn)</div><pre><code>@transaction.atomic
+def post_receipt(receipt_id, user=None):
+    receipt = Receipt.objects.select_for_update(of=(&quot;self&quot;,)).get(id=receipt_id)
+    if receipt.status != Receipt.Status.DRAFT:
+        raise InventoryConflict(&quot;Chỉ có thể chốt phiếu nhập ở trạng thái nháp.&quot;)
+    food_ids = sorted({line.food_id for line in lines})
+    foods = {f.id: f for f in FoodItem.objects.filter(id__in=food_ids).order_by(&quot;id&quot;).select_for_update()}
+    for line in lines:
+        ...  # cộng tồn, tính giá bình quân, ghi StockTransaction IN
+    receipt.status = Receipt.Status.POSTED</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/services.py (post_receipt)</span></div>
+</div></article>
+<article class="q" id="cau-23" data-n="23"><div class="n">23</div><div class="qbody"><h3>Giá bình quân gia quyền được tính ra sao?</h3>
+<p><b>Công thức:</b> giá mới = (tồn cũ × giá cũ + lượng nhập × giá nhập) / tồn mới, làm tròn 2 số lẻ.</p>
+<p><b>Ví dụ:</b> kho có 10 kg thịt giá 100.000 đ/kg, nhập thêm 5 kg giá 130.000 đ/kg. Giá mới = (1.000.000 + 650.000) / 15 = <b>110.000 đ/kg</b>. Khi xuất, phiếu xuất chụp giá 110.000 tại thời điểm chốt.</p>
+<div class="codebox"><div class="lbl">Python · services.py</div><pre><code>new_qty = food.quantity + line.quantity
+new_avg = (food.quantity * food.avg_cost + line.quantity * line.unit_price) / new_qty
+food.avg_cost = money(new_avg)       # quantize 0.01 ROUND_HALF_UP</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/services.py (post_receipt)</span></div>
+</div></article>
+<article class="q" id="cau-24" data-n="24"><div class="n">24</div><div class="qbody"><h3>transaction.atomic nghĩa là gì?</h3>
+<p>Mọi lệnh ghi bên trong khối <code>atomic</code> được coi là <b>một gói duy nhất</b>: hoặc tất cả cùng thành công, hoặc tất cả cùng hủy.</p>
+<p>Ví dụ: phiếu có 3 dòng, dòng thứ 3 bị lỗi. Nếu không có atomic, 2 dòng đầu đã được cộng tồn và sổ kho bị sai. Có atomic thì cả phiếu như chưa từng chốt.</p>
+<div class="codebox"><div class="lbl">Python · day_views.py</div><pre><code>from django.db import transaction
+
+with transaction.atomic():
+    issue = days.create_day_issue(day_date, request.user)
+    audit.record(request, &quot;day_issue_create&quot;, &quot;issue&quot;, issue.id, f&quot;Tạo phiếu xuất bếp {issue.code}&quot;)
+# lỗi ở audit.record → phiếu xuất cũng không được tạo</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/day_views.py (lunch_day_issue)</span></div>
+</div></article>
+<article class="q" id="cau-25" data-n="25"><div class="n">25</div><div class="qbody"><h3>select_for_update là gì? Nếu hai người cùng bấm chốt một phiếu thì sao?</h3>
+<p><code>select_for_update()</code> <b>khóa dòng dữ liệu</b> cho tới khi transaction kết thúc. Người đến sau muốn khóa cùng dòng phải <b>đứng chờ</b>.</p>
+<p>Hai người cùng chốt một phiếu: người A khóa trước và chốt xong. Người B được vào, đọc lại thì thấy phiếu đã <code>posted</code>, nên nhận lỗi <b>409 "đã chốt trước đó"</b>. Tồn không bị cộng hai lần.</p>
+<div class="codebox"><div class="lbl">Python · services.py (post_issue)</div><pre><code>issue = Issue.objects.select_for_update(of=(&quot;self&quot;,)).get(id=issue_id)
+if issue.status != Issue.Status.DRAFT:
+    raise InventoryConflict(&quot;Phiếu xuất đã được chốt trước đó.&quot;)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/services.py (post_issue)</span></div>
+</div></article>
+<article class="q" id="cau-26" data-n="26"><div class="n">26</div><div class="qbody"><h3>Vì sao phải khóa mặt hàng theo id tăng dần?</h3>
+<p>Để tránh <b>khóa chết (deadlock)</b>. Giả sử A khóa gạo rồi chờ khóa thịt, còn B đã khóa thịt và đang chờ khóa gạo. Hai bên chờ nhau mãi.</p>
+<p>Nếu ai cũng khóa theo cùng một thứ tự (id tăng dần), người đến sau chỉ phải xếp hàng chờ, không bao giờ vòng tròn chờ nhau.</p>
+<div class="codebox"><div class="lbl">Python</div><pre><code>foods = FoodItem.objects.filter(id__in=food_ids).order_by(&quot;id&quot;).select_for_update()</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §5.3; backend/apps/inventory/services.py</span></div>
+</div></article>
+<article class="q" id="cau-27" data-n="27"><div class="n">27</div><div class="qbody"><h3>Thứ tự khóa đầy đủ của chuỗi bữa trưa (G2) là gì?</h3>
+<p>Khi một thao tác chạm nhiều loại dữ liệu, mọi code phải khóa theo đúng thứ tự: <b>đầu phiếu</b> → <b>LunchDay / DemandRevision / PurchaseOrder</b> → <b>FoodItem</b> theo id tăng dần → <b>StockAllocation</b> theo id tăng dần → <b>PurchaseOrderLine</b> theo id tăng dần.</p>
+<p>Test đồng thời chạy hai kết nối thật song song (ví dụ nhận hàng và xuất kho cùng lúc) để chứng minh không có deadlock.</p>
+<div class="codebox"><div class="lbl">Python · services.py (post_receipt)</div><pre><code># SF62: thứ tự khóa đầu phiếu → đơn đặt → food → allocation → dòng đơn (plan_final §3).
+orders = list(PurchaseOrder.objects.filter(id__in=order_ids).order_by(&quot;id&quot;).select_for_update())
+foods = {f.id: f for f in FoodItem.objects.filter(id__in=food_ids).order_by(&quot;id&quot;).select_for_update()}
+list(StockAllocation.objects.filter(...).order_by(&quot;id&quot;).select_for_update())
+po_lines = {pl.id: pl for pl in PurchaseOrderLine.objects.filter(...).order_by(&quot;id&quot;).select_for_update()}</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>plan_final.md §3; backend/apps/inventory/services.py; test_g2.py (G2DongThoiTests)</span></div>
+</div></article>
+<article class="q" id="cau-28" data-n="28"><div class="n">28</div><div class="qbody"><h3>&quot;Khóa lạc quan&quot; bằng version dùng để làm gì?</h3>
+<p>Có những màn hình người dùng mở lâu, như nhập số suất cho cả trường. Không thể khóa dòng suốt lúc họ gõ. Thay vào đó, mỗi bản ghi có số <code>version</code>, và giao diện gửi kèm version mình đang xem khi lưu.</p>
+<p>Nếu version trong DB đã khác (người khác vừa lưu), backend trả <b>409 "Tải lại rồi thử lại"</b> thay vì âm thầm ghi đè. Trigger còn bắt buộc mỗi lần sửa ngày ăn phải tăng version đúng 1.</p>
+<div class="codebox"><div class="lbl">Python · lunch.py (quy ước)</div><pre><code>updated = LunchDay.objects.filter(pk=day_id, version=expected).update(..., version=F(&quot;version&quot;) + 1)
+if not updated:
+    raise LunchVersionConflict  # → HTTP 409</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/lunch.py (docstring); migrations/0013_lunch_integrity.py</span></div>
+</div></article>
+<article class="q" id="cau-29" data-n="29"><div class="n">29</div><div class="qbody"><h3>Làm sao chắc tồn kho không bao giờ âm, và hàng đã giữ cho ngày khác không bị lấy mất?</h3>
+<p>Khi chốt phiếu xuất, backend kiểm tra <b>toàn phiếu trước khi ghi dòng nào</b>: tồn phải đủ, và tồn trừ phần đã giữ cho ngày ăn khác cũng phải đủ. Thiếu một dòng là cả phiếu bị từ chối (409).</p>
+<p>Phiếu xuất cho bếp gắn với một ngày ăn được dùng phần đã giữ của chính ngày đó. Ngoài ra DB còn ràng buộc <code>quantity &gt;= 0</code>.</p>
+<div class="codebox"><div class="lbl">Python · services.py (post_issue)</div><pre><code>if food.quantity &lt; line.quantity:
+    raise InventoryConflict(f&quot;Không đủ tồn kho cho &#x27;{food.name}&#x27;. ...&quot;)
+held = reserved_stock(food.id, exclude_day_id=issue.lunch_day_id)
+if food.quantity - held &lt; line.quantity:
+    raise InventoryConflict(f&quot;&#x27;{food.name}&#x27;: {held} đã giữ cho ngày ăn khác, ...&quot;)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/services.py (post_issue, reserved_stock)</span></div>
+</div></article>
+<article class="q" id="cau-30" data-n="30"><div class="n">30</div><div class="qbody"><h3>Thực đơn cố định hoạt động thế nào? Sửa thực đơn có làm sai số liệu ngày cũ không?</h3>
+<p>Mỗi thứ từ Thứ Hai đến Thứ Sáu có một thực đơn, lặp hằng tuần (<code>MenuVersion</code>). Thứ Bảy, Chủ nhật và ngày lễ do admin đánh dấu là ngày nghỉ.</p>
+<p>Muốn sửa thì tạo <b>phiên bản mới áp dụng từ ngày mai trở đi</b>. Mỗi ngày học được <b>chụp lại</b> món và định lượng (<code>DayMenuSnapshot</code>). Sau này sửa công thức món cũng không đổi số liệu ngày cũ. Trigger chặn sửa thực đơn đã có hiệu lực.</p>
+<div class="codebox"><div class="lbl">Python · menu_services.py</div><pre><code>def create_menu_version(effective_from, days, user, note=&quot;&quot;):
+    if effective_from &lt;= today():
+        raise field_error(&quot;effective_from&quot;, &quot;Phải từ ngày mai trở đi.&quot;, &quot;... không sửa lùi.&quot;)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/menu_services.py; migrations/0016_menu_integrity.py</span></div>
+</div></article>
+<article class="q" id="cau-31" data-n="31"><div class="n">31</div><div class="qbody"><h3>Nhu cầu nguyên liệu của một ngày được tính như thế nào?</h3>
+<p>Nhu cầu = <b>tổng của (số suất × định lượng từng món)</b>. Cộng hết trước, <b>làm tròn sau cùng</b> tới 0,001 kg theo ROUND_HALF_UP. Đơn vị "cái" (trứng, hộp sữa chua) thì làm tròn lên, vì không mua được nửa quả trứng.</p>
+<p><b>Ví dụ chuẩn của dự án:</b> 300 suất, món thịt kho cần 60 g thịt và canh cần 10 g thịt cho một suất. Nhu cầu là 300 × 0,070 kg = <b>21 kg</b>. Nếu làm tròn từng món trước rồi mới cộng, sai số sẽ dồn lại.</p>
+<div class="codebox"><div class="lbl">Ví dụ</div><pre><code>300 suất × (0.060 kg + 0.010 kg) = 21.000 kg</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §6; backend/apps/inventory/demand_services.py</span></div>
+</div></article>
+<article class="q" id="cau-32" data-n="32"><div class="n">32</div><div class="qbody"><h3>Từ nhu cầu, hệ thống đề xuất mua bao nhiêu?</h3>
+<p>Bắt đầu từ nhu cầu cộng dự phòng (phải ghi lý do). Trừ phần lấy từ <b>tồn còn giữ được</b> (from_stock). Trừ <b>hàng đang chờ về</b> từ đơn đã duyệt hoặc đã gửi, về kịp ngày (from_pending). Phần còn lại là <b>cần mua</b> (to_buy).</p>
+<p><b>Ví dụ:</b> cần 21 kg + dự phòng 1 kg − tồn 5 kg − đang về 4 kg = <b>mua 13 kg</b>. Khi duyệt, hệ thống giữ chỗ (StockAllocation) phần tồn và phần đang về cho ngày đó.</p>
+<div class="codebox"><div class="lbl">Ví dụ</div><pre><code>to_buy = required + reserve - from_stock - from_pending
+      = 21     + 1       - 5          - 4            = 13 (kg)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §6; demand_services.py (calculate, approve)</span></div>
+</div></article>
+<article class="q" id="cau-33" data-n="33"><div class="n">33</div><div class="qbody"><h3>Bản tính nhu cầu &quot;lỗi thời&quot; là gì, và vì sao duyệt bị từ chối?</h3>
+<p>Nếu sau khi tính, <b>số suất dự kiến hoặc thực đơn thay đổi</b>, bản tính cũ không còn đúng. Lúc bấm duyệt, backend phát hiện điều này, đánh dấu bản tính là <code>stale</code> và trả <b>409</b> để người dùng tính lại.</p>
+<p>Có một chi tiết tinh tế: trạng thái "lỗi thời" được lưu ở <b>transaction riêng</b> trước khi báo lỗi. Nếu để chung transaction, khi báo lỗi thì chính việc đánh dấu cũng bị hoàn tác.</p>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/demand_services.py (approve, is_outdated); demand_views.py (&quot;tự quản transaction&quot;)</span></div>
+</div></article>
+<article class="q" id="cau-34" data-n="34"><div class="n">34</div><div class="qbody"><h3>Đơn đặt hàng và nhận hàng nhiều đợt hoạt động ra sao?</h3>
+<p>Đơn đi qua các trạng thái <b>nháp → đã duyệt → đã gửi nhà cung cấp → đã đóng</b> (hoặc hủy). Đổi trạng thái phải gửi kèm version; hủy hoặc đóng phần còn lại phải ghi lý do.</p>
+<p>Hàng về có thể nhận nhiều đợt. <b>Ví dụ:</b> đặt 13 kg, đợt đầu nhận 10 kg. Lúc này đơn còn thiếu 3 kg; nhập nhận 4 kg sẽ bị chặn vì vượt số đặt. Nhận đúng 3 kg thì đơn đủ và tự đóng. Phiếu nhận tạo ra ở dạng nháp và phải chốt mới cộng tồn.</p>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §6; backend/apps/inventory/purchase_services.py; services.py (_receive_po_line, _close_fully_received)</span></div>
+</div></article>
+<article class="q" id="cau-35" data-n="35"><div class="n">35</div><div class="qbody"><h3>Xuất bếp và đóng ngày có những luật gì?</h3>
+<p><b>Phiếu xuất bếp</b> gắn với ngày ăn, chỉ lấy phần còn thiếu theo bản nhu cầu đã duyệt, và dùng phần hàng đã giữ cho ngày đó.</p>
+<p><b>Đóng ngày</b> đòi hỏi: đã chốt số suất thực tế, không còn phiếu xuất nháp; nếu lượng đã xuất khác lượng cần thì phải ghi chú. Đã đóng thì không xuất thêm và không thêm hay xóa ảnh suất ăn. Mở lại phải có lý do, và lịch sử lần đóng cũ vẫn được giữ.</p>
+<div class="codebox"><div class="lbl">Python · day_services.py</div><pre><code>if day.actual_confirmed_at is None:
+    raise Conflict(&quot;Phải chốt số suất thực tế trước khi đóng ngày.&quot;)
+if variances and not note.strip():
+    raise InputError(&quot;Có chênh lệch giữa lượng cần và đã xuất; ghi chú giải thích trước khi đóng ngày.&quot;)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/day_services.py (close_day, reopen_close)</span></div>
+</div></article>
+<article class="q" id="cau-36" data-n="36"><div class="n">36</div><div class="qbody"><h3>Chi phí mỗi suất tính thế nào? Nhập hàng giá mới có làm đổi chi phí ngày cũ không?</h3>
+<p>Chi phí ngày = tổng giá trị các bút toán <b>OUT</b> của phiếu xuất bếp đã chốt trong ngày đó. Chi phí mỗi suất = chi phí ngày chia cho <b>số suất thực tế</b>, không phải số dự kiến.</p>
+<p><b>Không đổi.</b> Giá vốn được chụp vào sổ kho đúng lúc chốt xuất. Tuần sau nhập thịt giá cao hơn chỉ ảnh hưởng các lần xuất sau.</p>
+<div class="codebox"><div class="lbl">Python · day_services.py (day_cost)</div><pre><code>cost = -(StockTransaction.objects.filter(issue_line__issue__lunch_day=day, type=&quot;OUT&quot;)
+         .aggregate(t=Sum(&quot;value_delta&quot;))[&quot;t&quot;] or 0)
+per = (cost / actual).quantize(CENT, rounding=ROUND_HALF_UP)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/day_services.py (day_cost)</span></div>
+</div></article>
+</section>
+<section class="ch" id="ch4"><div class="ch-head"><div class="eyebrow">Chương 4<span class="range">Câu 37–43</span></div><h2>Kiểm tra dữ liệu gửi lên và trả lỗi</h2><p>Không bao giờ tin dữ liệu từ trình duyệt: mọi thứ đi qua một bộ kiểm tra chung.</p></div>
+<article class="q" id="cau-37" data-n="37"><div class="n">37</div><div class="qbody"><h3>Vì sao phải kiểm tra kỹ dữ liệu gửi lên, khi giao diện đã chặn rồi?</h3>
+<p>Giao diện chỉ là một cách gửi yêu cầu. Bất kỳ ai cũng có thể gửi thẳng tới API bằng công cụ khác, với dữ liệu tùy ý. Trước đây vài kiểu dữ liệu lạ đã làm server lỗi 500 (ISSUE-004/005/006/008).</p>
+<p>Vì vậy toàn bộ việc kiểm tra được gom vào <code>http_input.py</code>. Mọi view dùng chung, nên chỉ cần sửa ở một chỗ.</p>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/http_input.py (docstring BE-09)</span></div>
+</div></article>
+<article class="q" id="cau-38" data-n="38"><div class="n">38</div><div class="qbody"><h3>Gửi body là mảng, null hoặc JSON hỏng thì sao?</h3>
+<p>Hàm <code>read_object</code> chỉ chấp nhận <b>JSON object</b> (dạng <code>{...}</code>). Body rỗng, JSON sai cú pháp, mảng hay null đều trả <b>400</b> kèm câu giải thích. Không còn lỗi 500.</p>
+<div class="codebox"><div class="lbl">Ví dụ</div><pre><code>POST /api/categories/
+[1, 2, 3]
+→ 400 {&quot;message&quot;: &quot;Dữ liệu gửi lên phải là một object JSON.&quot;}</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/http_input.py (read_object)</span></div>
+</div></article>
+<article class="q" id="cau-39" data-n="39"><div class="n">39</div><div class="qbody"><h3>Gửi kèm một trường lạ thì sao?</h3>
+<p>Mỗi API khai báo danh sách trường được nhận. Hàm <code>only_fields</code> từ chối mọi trường khác bằng lỗi 400.</p>
+<p>Điều này chặn kiểu tấn công gửi thêm trường nhạy cảm, chẳng hạn <code>created_by</code> để mạo danh người khác, hay <code>status: "posted"</code> để bỏ qua bước chốt. Nó cũng giúp lập trình viên phát hiện gõ sai tên trường.</p>
+<div class="codebox"><div class="lbl">Python · purchase_views.py</div><pre><code>data = read_object(request)
+only_fields(data, {&quot;supplier_id&quot;, &quot;expected_date&quot;, &quot;note&quot;, &quot;lines&quot;})</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/http_input.py (only_fields); purchase_views.py</span></div>
+</div></article>
+<article class="q" id="cau-40" data-n="40"><div class="n">40</div><div class="qbody"><h3>Vì sao chuỗi &quot;false&quot; lại là một lỗi bảo mật?</h3>
+<p>Trong Python, <code>bool("false")</code> trả về <b>True</b>, vì mọi chuỗi không rỗng đều là đúng. Code cũ gửi "false" để khóa một mặt hàng nhưng lại bật nó lên (ISSUE-005).</p>
+<p>Bây giờ trường kiểu đúng/sai chỉ nhận đúng giá trị <code>true</code> hoặc <code>false</code> của JSON. Chuỗi, số 0 hay 1 đều bị từ chối.</p>
+<div class="codebox"><div class="lbl">Python</div><pre><code>&gt;&gt;&gt; bool(&quot;false&quot;)
+True                      # bẫy!
+# http_input.opt_bool: chỉ chấp nhận True/False thật, còn lại → 400</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/http_input.py (opt_bool); docstring: &quot;false&quot; (chuỗi) → 400</span></div>
+</div></article>
+<article class="q" id="cau-41" data-n="41"><div class="n">41</div><div class="qbody"><h3>Số thập phân được kiểm tra thế nào?</h3>
+<p>Chỉ nhận <b>chuỗi số thập phân</b> như <code>"12.5"</code>. Từ chối số float, true/false, NaN, Infinity, dạng mũ <code>"1e3"</code>. Từ chối số có nhiều chữ số lẻ hơn cho phép (<b>không làm tròn âm thầm</b>), số quá lớn, số âm hoặc bằng 0 khi không được phép.</p>
+<div class="codebox"><div class="lbl">Python · http_input.py</div><pre><code>def check_decimal(value, key, max_digits, dp, positive=True, allow_zero=False, label=None):
+    if not isinstance(value, str):
+        raise field_error(key, &quot;Phải là số thập phân dạng chuỗi, ví dụ \&quot;12.5\&quot;.&quot;)
+    if not DECIMAL_RE.match(text):            # ^-?\d+(\.\d+)?$
+        raise field_error(key, &quot;Số thập phân không hợp lệ.&quot;)
+    if len(frac.rstrip(&quot;0&quot;)) &gt; dp:
+        raise field_error(key, f&quot;Tối đa {dp} chữ số sau dấu thập phân.&quot;)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/http_input.py (check_decimal)</span></div>
+</div></article>
+<article class="q" id="cau-42" data-n="42"><div class="n">42</div><div class="qbody"><h3>Lỗi trong service được đổi thành mã HTTP ở đâu?</h3>
+<p>Decorator <code>@json_api</code> bọc mọi view. Nó bắt các lỗi <b>đã biết</b> và đổi sang mã HTTP tương ứng.</p>
+<p>Nó <b>cố ý không bắt Exception chung</b>. Lỗi lập trình thật vẫn hiện thành 500 và được ghi vào log, nên không bị che giấu.</p>
+<div class="codebox"><div class="lbl">Python · http_input.py (json_api)</div><pre><code>except InputError as exc:                      return error(exc.message, exc.status, exc.errors)   # 400/409
+except (InventoryConflict, LunchVersionConflict): return error(message, 409, errors)
+except ValidationError:                          return error(message, 400, errors)
+except ObjectDoesNotExist:                       return error(&quot;Không tìm thấy dữ liệu.&quot;, 404)
+except PermissionDenied as exc:                  return error(str(exc) or &quot;...&quot;, 403)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/http_input.py (json_api)</span></div>
+</div></article>
+<article class="q" id="cau-43" data-n="43"><div class="n">43</div><div class="qbody"><h3>Người lập phiếu (created_by) được lấy từ đâu? Lỗi 500 có lộ thông tin không?</h3>
+<p>Người lập phiếu luôn lấy từ <b>phiên đăng nhập</b> (<code>request.user</code>), không bao giờ từ dữ liệu gửi lên. Không ai mạo danh người khác được.</p>
+<p>Trên production <code>DEBUG=False</code>, nên lỗi 500 không trả traceback cho người dùng. Chi tiết lỗi chỉ được ghi vào log container, xem bằng <code>npm run ec2:logs</code>.</p>
+<div class="codebox"><div class="lbl">Python · day_services.py</div><pre><code>issue = Issue.objects.create(code=code, date=day.date, created_by=user, lunch_day=day)
+#                                                     ^ user = request.user từ view</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §5.3 (created_by lấy từ session); settings.py (LOGGING khi DEBUG=False)</span></div>
+</div></article>
+</section>
+<section class="ch" id="ch5"><div class="ch-head"><div class="eyebrow">Chương 5<span class="range">Câu 44–55</span></div><h2>Đăng nhập và phân quyền</h2><p>Ai được vào, vào bằng cách nào, và được làm gì.</p></div>
+<article class="q" id="cau-44" data-n="44"><div class="n">44</div><div class="qbody"><h3>Vì sao dùng phiên đăng nhập (session cookie) mà không dùng token JWT?</h3>
+<p>Django có sẵn hệ thống phiên đã được kiểm chứng nhiều năm. Cookie phiên đặt <b>HttpOnly</b> nên JavaScript trên trang không đọc được; dù trang bị chèn mã độc cũng khó lấy cắp phiên.</p>
+<p>Phiên được lưu ở server, nên <b>đăng xuất, đổi mật khẩu hay khóa tài khoản có hiệu lực ngay</b>. Token JWT thường vẫn dùng được tới khi hết hạn.</p>
+<div class="src"><b>Dẫn chứng</b><span>backend/schoolfood/settings.py (SESSION_COOKIE_HTTPONLY = True)</span></div>
+</div></article>
+<article class="q" id="cau-45" data-n="45"><div class="n">45</div><div class="qbody"><h3>Cookie được cấu hình an toàn thế nào?</h3>
+<p><b>sessionid</b>: HttpOnly (JS không đọc được), SameSite=Lax (trang web khác gửi form sang thì không kèm cookie), Secure trên production (chỉ gửi qua HTTPS).</p>
+<p><b>csrftoken</b>: cố ý để JS đọc được, vì frontend phải lấy nó gắn vào header. Nó không phải bí mật đăng nhập, chỉ là "vé" chứng minh yêu cầu xuất phát từ chính trang của mình.</p>
+<div class="codebox"><div class="lbl">Python · settings.py</div><pre><code>CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = &quot;Lax&quot;
+CSRF_COOKIE_SAMESITE = &quot;Lax&quot;
+# khi DEBUG=False:
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/schoolfood/settings.py</span></div>
+</div></article>
+<article class="q" id="cau-46" data-n="46"><div class="n">46</div><div class="qbody"><h3>CSRF là gì, và dự án chống nó như thế nào?</h3>
+<p><b>Tình huống:</b> bạn đang đăng nhập SchoolFood, rồi mở một trang lạ. Trang đó lén gửi yêu cầu "chốt phiếu" tới SchoolFood. Trình duyệt tự kèm cookie phiên của bạn, nên server tưởng chính bạn bấm. Đó là CSRF.</p>
+<p><b>Cách chống:</b> mọi yêu cầu ghi phải mang header <code>X-CSRFToken</code> khớp với cookie <code>csrftoken</code>. Trang lạ không đọc được cookie của tên miền khác nên không tạo được header đúng; yêu cầu bị trả 403. Thêm vào đó, cookie SameSite=Lax và danh sách <code>CSRF_TRUSTED_ORIGINS</code>.</p>
+<div class="codebox"><div class="lbl">Python + TypeScript</div><pre><code># Middleware có sẵn của Django
+&quot;django.middleware.csrf.CsrfViewMiddleware&quot;,
+# Frontend gửi header trên mọi request
+headers.set(&#x27;X-CSRFToken&#x27;, getCookie(&#x27;csrftoken&#x27;));</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>settings.py (MIDDLEWARE, CSRF_TRUSTED_ORIGINS); frontend/src/utils/api.ts; test_security.py (thiếu CSRF → 403)</span></div>
+</div></article>
+<article class="q" id="cau-47" data-n="47"><div class="n">47</div><div class="qbody"><h3>Luồng đăng nhập diễn ra như thế nào?</h3>
+<p><b>1.</b> Kiểm tra có đủ tên đăng nhập và mật khẩu. <b>2.</b> Nếu tên hoặc IP đang bị khóa thì trả 429. <b>3.</b> Kiểm tra mật khẩu; sai thì tăng bộ đếm, ghi nhật ký, trả 401. <b>4.</b> Tài khoản chưa có vai trò thì trả 403. <b>5.</b> Đúng thì xóa bộ đếm, tạo phiên, ghi thời điểm đăng nhập <code>auth_at</code> và ghi nhật ký.</p>
+<div class="codebox"><div class="lbl">Python · auth_views.py (login_view, rút gọn)</div><pre><code>user = authenticate(request, username=username, password=password)
+if user is None:
+    locked = max(throttle.register_failure(Scope.USER, username),
+                 throttle.register_failure(Scope.IP, ip))
+    audit.record(request, &quot;login_failed&quot;, &quot;user&quot;, summary=&quot;Sai tên đăng nhập hoặc mật khẩu&quot;, actor_username=username)
+    return error(&quot;Tên đăng nhập hoặc mật khẩu không chính xác.&quot;, 401)
+if get_user_role(user) is None:
+    return error(&quot;Tài khoản chưa được phân quyền. Liên hệ Hiệu trưởng.&quot;, 403)
+login(request, user)
+request.session[SESSION_AUTH_AT] = timezone.now().timestamp()</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/auth_views.py (login_view)</span></div>
+</div></article>
+<article class="q" id="cau-48" data-n="48"><div class="n">48</div><div class="qbody"><h3>Vì sao báo lỗi đăng nhập chung chung, không nói rõ là sai tên hay sai mật khẩu?</h3>
+<p>Nếu báo "tên đăng nhập không tồn tại", kẻ xấu biết tên nào có thật và chỉ cần dò mật khẩu cho tên đó. Kiểu dò này gọi là dò tài khoản (user enumeration).</p>
+<p>Vì vậy cả hai trường hợp đều nhận cùng một câu <b>"Tên đăng nhập hoặc mật khẩu không chính xác"</b>. Bộ đếm khóa cũng đếm cả tên không tồn tại.</p>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/auth_views.py (docstring login_view)</span></div>
+</div></article>
+<article class="q" id="cau-49" data-n="49"><div class="n">49</div><div class="qbody"><h3>Có những vai trò nào, và hệ thống xác định vai trò ra sao?</h3>
+<p><b>Quản lý</b> (nhóm <code>manager</code>) làm mọi nghiệp vụ. <b>Hiệu trưởng</b> (nhóm <code>principal</code>) xem tất cả, quản lý tài khoản, xem nhật ký, nhưng không nhập hay xuất. <b>Superuser</b> được coi như Quản lý và được quản lý tài khoản. Phụ huynh không có tài khoản.</p>
+<p>Tài khoản không thuộc nhóm nào thì không dùng được hệ thống.</p>
+<div class="codebox"><div class="lbl">Python · auth_views.py</div><pre><code>def get_user_role(user):
+    if not user or not user.is_authenticated or not user.is_active:
+        return None
+    if user.is_superuser:
+        return ROLE_MANAGER
+    names = set(user.groups.values_list(&quot;name&quot;, flat=True))
+    if ROLE_MANAGER in names:
+        return ROLE_MANAGER
+    if ROLE_PRINCIPAL in names:
+        return ROLE_PRINCIPAL
+    return None</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/auth_views.py (get_user_role); plan_final.md R9</span></div>
+</div></article>
+<article class="q" id="cau-50" data-n="50"><div class="n">50</div><div class="qbody"><h3>Quyền được kiểm tra ở đâu trong code?</h3>
+<p>Bằng <b>decorator</b> đặt trên từng view. <code>inventory_permission_required</code>: chưa đăng nhập thì 401; lệnh đọc (GET) cho cả Quản lý và Hiệu trưởng; lệnh ghi chỉ cho Quản lý, người khác nhận 403.</p>
+<p><code>principal_required</code> dùng cho tài khoản và nhật ký. <code>manager_required</code> chặn mọi phương thức, kể cả GET, chẳng hạn khi xem email phụ huynh đầy đủ.</p>
+<div class="codebox"><div class="lbl">Python · auth_views.py</div><pre><code>READ_METHODS = (&quot;GET&quot;, &quot;HEAD&quot;, &quot;OPTIONS&quot;)
+
+def inventory_permission_required(view_func):
+    @wraps(view_func)
+    def wrapped(request, *args, **kwargs):
+        denied = _deny_unauthenticated(request)
+        if denied:
+            return denied
+        if request.method not in READ_METHODS and get_user_role(request.user) != ROLE_MANAGER:
+            return error(&quot;Bạn không có quyền thực hiện thao tác này. Quyền yêu cầu: Quản lý.&quot;, 403)
+        return view_func(request, *args, **kwargs)
+    return wrapped</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/auth_views.py</span></div>
+</div></article>
+<article class="q" id="cau-51" data-n="51"><div class="n">51</div><div class="qbody"><h3>Làm sao chắc không API nào bị quên kiểm tra quyền?</h3>
+<p>Test <code>PermissionMatrixTests</code> có một bảng <code>EXPECTED_PERMS</code> khai quyền cho <b>mọi route</b>. Test duyệt toàn bộ <code>urls.py</code>: route nào chưa được khai thì test fail ngay.</p>
+<p>Với từng route, test thử với người chưa đăng nhập (phải 401), tài khoản không vai trò (403), Quản lý, Hiệu trưởng, và gửi thiếu CSRF (403).</p>
+<div class="codebox"><div class="lbl">Python · test_security.py</div><pre><code>EXPECTED_PERMS = {
+    &quot;lunch_day_photos&quot;: (&quot;inventory&quot;, [&quot;GET&quot;], [&quot;POST&quot;]),
+    &quot;meal_photo_image&quot;: (&quot;inventory&quot;, [&quot;GET&quot;], []),
+    ...
+}
+self.assertEqual(sorted(names - set(EXPECTED_PERMS)), [], &quot;Route mới phải khai quyền trong EXPECTED_PERMS&quot;)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/test_security.py (PermissionMatrixTests)</span></div>
+</div></article>
+<article class="q" id="cau-52" data-n="52"><div class="n">52</div><div class="qbody"><h3>Tài khoản chưa có vai trò, hoặc superuser, được xử lý thế nào?</h3>
+<p>Tài khoản chưa được gán nhóm vẫn đăng nhập đúng mật khẩu nhưng nhận <b>403 "Tài khoản chưa được phân quyền"</b>, và lần thử được ghi nhật ký. Đây là cách an toàn: tạo tài khoản mới mà quên gán quyền thì người đó không làm được gì.</p>
+<p>Superuser được coi như Quản lý, nhưng <b>không sửa được qua màn Tài khoản</b>, để không ai vô tình hạ quyền quản trị cao nhất.</p>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/auth_views.py (login_view, get_user_role); user_views.py</span></div>
+</div></article>
+<article class="q" id="cau-53" data-n="53"><div class="n">53</div><div class="qbody"><h3>Quản lý tài khoản có những luật an toàn nào?</h3>
+<p>Chỉ Hiệu trưởng hoặc superuser được quản lý tài khoản. Có ba luật: <b>không sửa superuser qua API</b>; <b>không tự khóa hay tự đổi vai trò của chính mình</b> (tránh tự khóa mình ra ngoài); <b>luôn còn ít nhất một Hiệu trưởng đang hoạt động</b>.</p>
+<p>Luật thứ ba khóa các dòng Hiệu trưởng khi kiểm tra. Nhờ vậy, hai người cùng lúc khóa hai Hiệu trưởng cuối cùng sẽ không cùng thành công.</p>
+<div class="codebox"><div class="lbl">Python · user_views.py</div><pre><code>if user.is_superuser:
+    raise PermissionDenied(&quot;Không sửa tài khoản quản trị hệ thống (superuser) qua màn này.&quot;)
+...
+raise Conflict(&quot;Không tự khóa hoặc tự đổi vai trò của chính mình.&quot;)
+...
+raise Conflict(&quot;Phải luôn còn ít nhất một Hiệu trưởng đang hoạt động.&quot;)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/user_views.py</span></div>
+</div></article>
+<article class="q" id="cau-54" data-n="54"><div class="n">54</div><div class="qbody"><h3>Chính sách mật khẩu là gì? Vì sao không đặt được mật khẩu &quot;admin&quot;?</h3>
+<p>Mật khẩu phải dài <b>ít nhất 10 ký tự</b>, không nằm trong danh sách mật khẩu phổ biến, không giống tên đăng nhập, và không toàn số. "admin" vi phạm cả độ dài lẫn độ phổ biến nên bị từ chối.</p>
+<p>Một cụm từ dễ nhớ như <code>BepTruong-HoaSen-2026</code> vừa an toàn vừa dễ gõ.</p>
+<div class="codebox"><div class="lbl">Python · settings.py</div><pre><code>AUTH_PASSWORD_VALIDATORS = [
+    {&quot;NAME&quot;: &quot;...UserAttributeSimilarityValidator&quot;},
+    {&quot;NAME&quot;: &quot;...MinimumLengthValidator&quot;, &quot;OPTIONS&quot;: {&quot;min_length&quot;: 10}},
+    {&quot;NAME&quot;: &quot;...CommonPasswordValidator&quot;},
+    {&quot;NAME&quot;: &quot;...NumericPasswordValidator&quot;},
+]</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/schoolfood/settings.py (AUTH_PASSWORD_VALIDATORS)</span></div>
+</div></article>
+<article class="q" id="cau-55" data-n="55"><div class="n">55</div><div class="qbody"><h3>Đổi mật khẩu hoặc khóa tài khoản thì các phiên đang mở ra sao?</h3>
+<p>Mỗi phiên Django lưu một mã rút ra từ mật khẩu. <b>Đổi hoặc đặt lại mật khẩu</b> thì mã này đổi, và mọi phiên khác của tài khoản đó tự mất hiệu lực.</p>
+<p><b>Khóa tài khoản</b> (<code>is_active=False</code>) thì ngay ở yêu cầu tiếp theo, người đó bị coi là chưa đăng nhập (401). Có thể dùng thêm thao tác "đá phiên" (kill sessions) do Hiệu trưởng thực hiện.</p>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/user_views.py (reset password, kill sessions); test_security.py</span></div>
+</div></article>
+</section>
+<section class="ch" id="ch6"><div class="ch-head"><div class="eyebrow">Chương 6<span class="range">Câu 56–64</span></div><h2>Chống dò mật khẩu và giữ phiên an toàn</h2><p>Ba lớp chặn dò mật khẩu, cách lấy đúng IP người dùng, và hai giới hạn tuổi của phiên đăng nhập.</p></div>
+<article class="q" id="cau-56" data-n="56"><div class="n">56</div><div class="qbody"><h3>Tấn công dò mật khẩu là gì, và dự án chặn bằng mấy lớp?</h3>
+<p>Kẻ xấu dùng chương trình thử hàng nghìn mật khẩu mỗi phút cho tới khi trúng. Dự án chặn bằng <b>ba lớp</b>.</p>
+<p><b>Lớp 1, Cloudflare:</b> luật giới hạn tần suất do chủ dự án cấu hình. <b>Lớp 2, nginx:</b> mỗi IP tối đa 10 lần đăng nhập mỗi phút. <b>Lớp 3, backend:</b> khóa theo tên đăng nhập và theo IP, có ghi nhật ký. Mỗi lớp chặn bớt, nên một lớp lỗi vẫn còn các lớp khác.</p>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/throttle.py; deploy/nginx.conf (limit_req); docs/SECURITY.md</span></div>
+</div></article>
+<article class="q" id="cau-57" data-n="57"><div class="n">57</div><div class="qbody"><h3>Backend đếm và khóa đăng nhập sai như thế nào?</h3>
+<p>Trong cửa sổ 15 phút, sai <b>5 lần với cùng một tên đăng nhập</b> hoặc <b>20 lần từ cùng một IP</b> thì bị khóa <b>15 phút</b>. Quá 15 phút kể từ lần sai đầu tiên thì bộ đếm về 0.</p>
+<p>Bộ đếm lưu trong bảng <code>LoginThrottle</code> và được cập nhật với <code>select_for_update</code>. Nhờ vậy, hai yêu cầu sai cùng lúc không bị đếm thiếu.</p>
+<div class="codebox"><div class="lbl">Python · throttle.py</div><pre><code>WINDOW = timedelta(minutes=15)
+LOCK = timedelta(minutes=15)
+LIMITS = {LoginThrottle.Scope.USER: 5, LoginThrottle.Scope.IP: 20}
+
+row, _ = LoginThrottle.objects.select_for_update().get_or_create(
+    scope=scope, key_hash=_key(scope, value), defaults={&quot;window_start&quot;: now})
+row.failures += 1
+if row.failures &gt;= LIMITS[scope]:
+    row.locked_until = now + LOCK</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/throttle.py</span></div>
+</div></article>
+<article class="q" id="cau-58" data-n="58"><div class="n">58</div><div class="qbody"><h3>Vì sao phải đếm theo cả tên đăng nhập lẫn IP?</h3>
+<p><b>Đếm theo tên</b> chặn kẻ dùng nhiều máy cùng dò một tài khoản. <b>Đếm theo IP</b> chặn một máy dò lần lượt nhiều tài khoản (mỗi tài khoản sai 4 lần để né ngưỡng 5).</p>
+<p>Đăng nhập đúng chỉ xóa bộ đếm theo tên. Bộ đếm theo IP vẫn giữ, nên kẻ có một tài khoản thật không "rửa" được bộ đếm IP của mình.</p>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/throttle.py (docstring); auth_views.py (throttle.reset chỉ cho Scope.USER)</span></div>
+</div></article>
+<article class="q" id="cau-59" data-n="59"><div class="n">59</div><div class="qbody"><h3>Vì sao bảng khóa lưu mã băm thay vì lưu thẳng tên đăng nhập và IP?</h3>
+<p>Nếu bảng này bị lộ, người ngoài không biết ai đã đăng nhập sai. Dự án dùng <b>HMAC-SHA256 với SECRET_KEY</b>, không băm trần.</p>
+<p>Lý do: địa chỉ IPv4 chỉ có khoảng 4,3 tỷ giá trị (2<sup>32</sup>). Băm trần thì chỉ cần thử hết là suy ngược ra IP. Có thêm khóa bí mật thì không làm được.</p>
+<div class="codebox"><div class="lbl">Python · models.py</div><pre><code>class LoginThrottle(models.Model):
+    &quot;&quot;&quot;Không lưu username/IP rõ: key_hash = HMAC-SHA256 dùng SECRET_KEY (xem `hash_key`), để bảng này
+    lộ ra cũng không suy ngược được (băm trần IPv4 dò hết được vì chỉ có 2^32 giá trị).&quot;&quot;&quot;
+    key_hash = models.CharField(max_length=64)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/models.py (LoginThrottle)</span></div>
+</div></article>
+<article class="q" id="cau-60" data-n="60"><div class="n">60</div><div class="qbody"><h3>Khi bị khóa, người dùng nhận được gì?</h3>
+<p>Backend trả <b>429 Too Many Requests</b> kèm header <code>Retry-After</code> (số giây phải chờ) và câu tiếng Việt cho biết bao nhiêu phút nữa thử lại. Mọi lần bị khóa đều được ghi nhật ký với hành động <code>login_locked</code>.</p>
+<div class="codebox"><div class="lbl">Python · auth_views.py</div><pre><code>def _locked_response(seconds):
+    minutes = max(1, (seconds + 59) // 60)
+    response = error(f&quot;Đăng nhập tạm khóa do nhập sai nhiều lần. Thử lại sau {minutes} phút.&quot;, 429)
+    response[&quot;Retry-After&quot;] = str(seconds)
+    return response</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/auth_views.py (_locked_response)</span></div>
+</div></article>
+<article class="q" id="cau-61" data-n="61"><div class="n">61</div><div class="qbody"><h3>Đứng sau Cloudflare và nginx, làm sao biết IP thật của người dùng?</h3>
+<p>Mọi yêu cầu tới Django đều đi qua nginx, nên <code>REMOTE_ADDR</code> luôn là IP của nginx. IP thật nằm trong header <code>CF-Connecting-IP</code> do Cloudflare đặt. nginx chép nó sang <code>X-Real-IP</code>.</p>
+<p>Django <b>chỉ tin X-Real-IP khi bật <code>TRUST_PROXY_IP=true</code></b> (bật trên production). Ở máy dev, ai cũng tự gửi được header này để giả IP. Giá trị còn được kiểm tra là IP hợp lệ bằng module <code>ipaddress</code>.</p>
+<div class="codebox"><div class="lbl">nginx + Python</div><pre><code># nginx.conf
+map $http_cf_connecting_ip $client_real_ip { default $http_cf_connecting_ip; &quot;&quot; $remote_addr; }
+proxy_set_header X-Real-IP $client_real_ip;
+
+# http_input.py
+if getattr(settings, &quot;TRUST_PROXY_IP&quot;, False):
+    candidates.append(request.META.get(&quot;HTTP_X_REAL_IP&quot;, &quot;&quot;).strip())
+candidates.append((request.META.get(&quot;REMOTE_ADDR&quot;) or &quot;&quot;).strip())</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>deploy/nginx.conf; backend/apps/inventory/http_input.py (client_ip)</span></div>
+</div></article>
+<article class="q" id="cau-62" data-n="62"><div class="n">62</div><div class="qbody"><h3>Lớp chặn của nginx hoạt động ra sao?</h3>
+<p>Riêng đường dẫn <code>/api/auth/login/</code> bị giới hạn <b>10 yêu cầu mỗi phút cho mỗi IP</b>, cho phép dồn thêm 5. Vượt ngưỡng thì nginx trả luôn 429 dạng JSON giống định dạng lỗi của API, không cần tới Django. Nhờ vậy đợt dò ồ ạt không làm backend quá tải.</p>
+<div class="codebox"><div class="lbl">nginx · deploy/nginx.conf</div><pre><code>limit_req_zone $client_real_ip zone=login:10m rate=10r/m;
+
+location = /api/auth/login/ {
+    limit_req zone=login burst=5 nodelay;
+    limit_req_status 429;
+    error_page 429 = @login_limited;
+    proxy_pass http://django;
+}</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>deploy/nginx.conf</span></div>
+</div></article>
+<article class="q" id="cau-63" data-n="63"><div class="n">63</div><div class="qbody"><h3>Vì sao phiên tự hết hạn sau 30 phút không thao tác?</h3>
+<p>Máy tính ở phòng bếp hoặc văn phòng có thể bị bỏ quên khi đang đăng nhập. Sau 30 phút không thao tác, phiên tự hết hạn.</p>
+<p>Cách làm: cookie sống 1800 giây và được <b>gia hạn sau mỗi yêu cầu</b>. Còn dùng thì còn sống; bỏ đi 30 phút thì hết. Giao diện nhận 401 và chuyển về trang đăng nhập với thông báo "Phiên đăng nhập đã hết hạn".</p>
+<div class="codebox"><div class="lbl">Python · settings.py</div><pre><code>SESSION_COOKIE_AGE = int(os.getenv(&quot;SESSION_IDLE_SECONDS&quot;, &quot;1800&quot;))
+SESSION_SAVE_EVERY_REQUEST = True</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/schoolfood/settings.py</span></div>
+</div></article>
+<article class="q" id="cau-64" data-n="64"><div class="n">64</div><div class="qbody"><h3>Vì sao còn giới hạn tối đa 12 giờ cho một phiên?</h3>
+<p>Nếu người dùng thao tác liên tục, phiên 30 phút sẽ được gia hạn mãi. Một phiên bị đánh cắp cũng có thể bị giữ vô thời hạn. Giới hạn tuyệt đối 12 giờ buộc phải đăng nhập lại ít nhất mỗi ngày.</p>
+<p>Middleware <code>AbsoluteSessionTimeoutMiddleware</code> so thời điểm đăng nhập (<code>auth_at</code>) với hiện tại. Quá 12 giờ thì đăng xuất ngay.</p>
+<div class="codebox"><div class="lbl">Python · session_security.py</div><pre><code>class AbsoluteSessionTimeoutMiddleware:
+    def __call__(self, request):
+        user = getattr(request, &quot;user&quot;, None)
+        if user is not None and user.is_authenticated:
+            now = timezone.now().timestamp()
+            started = request.session.get(SESSION_AUTH_AT)
+            if not isinstance(started, (int, float)):
+                request.session[SESSION_AUTH_AT] = now
+            elif now - started &gt; settings.SESSION_ABSOLUTE_MAX_AGE:   # 12 giờ
+                logout(request)
+        return self.get_response(request)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/session_security.py</span></div>
+</div></article>
+</section>
+<section class="ch" id="ch7"><div class="ch-head"><div class="eyebrow">Chương 7<span class="range">Câu 65–74</span></div><h2>Bảo vệ dữ liệu cá nhân và nhật ký thao tác</h2><p>Email phụ huynh được mã hóa ra sao, ai được xem, và mọi thao tác được ghi lại thế nào.</p></div>
+<article class="q" id="cau-65" data-n="65"><div class="n">65</div><div class="qbody"><h3>Hệ thống giữ những dữ liệu cá nhân nào? Nguyên tắc là gì?</h3>
+<p>Nguyên tắc là <b>giữ ít nhất có thể</b>. Hệ thống chỉ lưu họ tên và lớp của học sinh, cùng tối đa 2 email phụ huynh, và chỉ khi phụ huynh đã đồng ý. Không lưu số điện thoại, ngày sinh hay hồ sơ khác. Phụ huynh không có tài khoản.</p>
+<p>Tài khoản nhân viên có tên đăng nhập và mật khẩu, mà mật khẩu được Django băm, không lưu dạng rõ.</p>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §1 (ngoài phạm vi: hồ sơ học sinh ngoài họ tên/lớp/email phụ huynh); plan_final.md R11</span></div>
+</div></article>
+<article class="q" id="cau-66" data-n="66"><div class="n">66</div><div class="qbody"><h3>Email phụ huynh được mã hóa như thế nào?</h3>
+<p>Mỗi email được mã hóa bằng <b>Fernet</b> (thư viện <code>cryptography</code>, thuật toán AES kèm chữ ký chống sửa) trước khi ghi vào DB. Nhìn thẳng vào bảng chỉ thấy chuỗi vô nghĩa, không có ký tự <code>@</code> nào. Chỉ lúc gửi thư hoặc lúc Quản lý bấm "Hiện email" thì backend mới giải mã.</p>
+<div class="codebox"><div class="lbl">Python · crypto_fields.py</div><pre><code>def encrypt(text):
+    return _fernet(settings.FIELD_ENCRYPTION_KEYS).encrypt(text.encode()).decode()
+
+def decrypt(token):
+    try:
+        return _fernet(settings.FIELD_ENCRYPTION_KEYS).decrypt(token.encode()).decode()
+    except InvalidToken:
+        raise ValueError(&quot;Không giải mã được: sai khóa FIELD_ENCRYPTION_KEYS.&quot;) from None</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/crypto_fields.py; test_students_email.py (DB không chứa email rõ)</span></div>
+</div></article>
+<article class="q" id="cau-67" data-n="67"><div class="n">67</div><div class="qbody"><h3>Muốn đổi khóa mã hóa (xoay khóa) thì làm thế nào?</h3>
+<p>Biến <code>FIELD_ENCRYPTION_KEYS</code> chứa <b>danh sách khóa</b> cách nhau bằng dấu phẩy. <code>MultiFernet</code> mã hóa bằng khóa <b>đầu tiên</b> và thử giải mã bằng <b>mọi khóa</b>.</p>
+<p>Để xoay khóa, thêm khóa mới lên đầu danh sách. Email mới dùng khóa mới, email cũ vẫn đọc được bằng khóa cũ.</p>
+<div class="codebox"><div class="lbl">Python · crypto_fields.py</div><pre><code>@lru_cache(maxsize=None)
+def _fernet(keys):
+    return MultiFernet([Fernet(k.strip().encode()) for k in keys.split(&quot;,&quot;) if k.strip()])
+# FIELD_ENCRYPTION_KEYS=&lt;khóa_mới&gt;,&lt;khóa_cũ&gt;</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/crypto_fields.py</span></div>
+</div></article>
+<article class="q" id="cau-68" data-n="68"><div class="n">68</div><div class="qbody"><h3>Email đã mã hóa thì làm sao tìm trùng và tránh gửi hai thư?</h3>
+<p>Mã hóa Fernet cho ra chuỗi <b>khác nhau mỗi lần</b>, kể cả với cùng một email, nên không so sánh được. Dự án lưu thêm <code>email_hash</code> = HMAC-SHA256 với khóa riêng <code>CONTACT_HASH_KEY</code>. Cùng một email luôn cho cùng một mã băm.</p>
+<p>Mã băm dùng cho hai việc: chặn một bé có hai email trùng nhau, và chặn gửi hai thư cho cùng một email trong một ngày (unique theo ngày và email_hash).</p>
+<div class="codebox"><div class="lbl">Python · crypto_fields.py</div><pre><code>def contact_hash(email):
+    return hmac.new(settings.CONTACT_HASH_KEY.encode(), email.encode(), hashlib.sha256).hexdigest()</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>crypto_fields.py; models.py (parent_contact_unique_email, notification_unique_per_day)</span></div>
+</div></article>
+<article class="q" id="cau-69" data-n="69"><div class="n">69</div><div class="qbody"><h3>Ai được xem email phụ huynh, và xem ở dạng nào?</h3>
+<p>Màn hình mặc định chỉ hiện <b>dạng che</b>, ví dụ <code>ng•••@gmail.com</code>. Muốn xem đầy đủ phải là <b>Quản lý</b> và bấm "Hiện email". Lần xem đó được ghi vào nhật ký.</p>
+<p>Hiệu trưởng chỉ thấy dạng che. Nhật ký và log lỗi khi gửi thư không bao giờ chứa email đầy đủ.</p>
+<div class="src"><b>Dẫn chứng</b><span>crypto_fields.py (email_hint); student_views.py (manager_required, audit); notifications.py (_safe_error)</span></div>
+</div></article>
+<article class="q" id="cau-70" data-n="70"><div class="n">70</div><div class="qbody"><h3>Sự đồng ý của phụ huynh, việc hủy nhận và xóa dữ liệu được xử lý ra sao?</h3>
+<p>Chỉ lưu email khi có <b>đồng ý</b> (<code>consent: true</code>). Khi nhập từ file CSV, dòng ghi <code>da_dong_y=khong</code> sẽ không được lưu email.</p>
+<p>Phụ huynh <b>hủy nhận</b> bằng link trong thư mà không cần đăng nhập. Khi bé <b>nghỉ học</b>, học sinh và email bị <b>xóa hẳn</b>, không chỉ ẩn đi. Nhật ký chỉ ghi "xóa học sinh #id", không ghi tên hay email.</p>
+<div class="src"><b>Dẫn chứng</b><span>student_services.py (parse_contacts, import_students); notification_views.py (unsubscribe); docs/SECURITY.md mục 10</span></div>
+</div></article>
+<article class="q" id="cau-71" data-n="71"><div class="n">71</div><div class="qbody"><h3>Nếu mất khóa mã hóa thì sao? Cất khóa ở đâu?</h3>
+<p><b>Mất khóa là mất toàn bộ email</b>, vì không ai giải mã được nữa, kể cả bản sao lưu. Vì vậy khóa phải được cất ở nơi riêng, ngoài máy chủ, chẳng hạn trong trình quản lý mật khẩu của trường.</p>
+<p>Trên production, thiếu khóa thì Django không khởi động. Ở máy dev, hệ thống tự sinh khóa từ SECRET_KEY và in cảnh báo "không dùng cho dữ liệu thật".</p>
+<div class="codebox"><div class="lbl">Python · settings.py</div><pre><code>if not FIELD_ENCRYPTION_KEYS or not CONTACT_HASH_KEY:
+    if not DEBUG:
+        raise ImproperlyConfigured(&quot;DEBUG=False cần FIELD_ENCRYPTION_KEYS và CONTACT_HASH_KEY (xem docs/SECURITY.md).&quot;)
+    warnings.warn(&quot;Dùng khóa mã hóa dev suy từ SECRET_KEY; KHÔNG dùng cho dữ liệu thật.&quot;, RuntimeWarning)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/schoolfood/settings.py; docs/SECURITY.md</span></div>
+</div></article>
+<article class="q" id="cau-72" data-n="72"><div class="n">72</div><div class="qbody"><h3>Nhật ký thao tác (AuditLog) ghi lại những gì?</h3>
+<p>Mỗi dòng nhật ký ghi: <b>ai</b> làm (tài khoản), <b>làm gì</b> (hành động), <b>trên đối tượng nào</b>, tóm tắt, các trường thay đổi từ giá trị cũ sang giá trị mới, IP và trình duyệt.</p>
+<p>Những việc được ghi: đăng nhập thành công, sai, bị khóa; tạo, sửa, khóa tài khoản; mọi thao tác ghi nghiệp vụ (phiếu, đơn, thực đơn, học sinh, gửi thư, ảnh). Hiệu trưởng xem nhật ký ở màn Nhật ký, có lọc và phân trang.</p>
+<div class="codebox"><div class="lbl">Python</div><pre><code>audit.record(request, &quot;po_cancel&quot;, &quot;purchase_order&quot;, order.id, f&quot;Hủy đơn {order.code}: {reason}&quot;)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/audit.py; audit_views.py</span></div>
+</div></article>
+<article class="q" id="cau-73" data-n="73"><div class="n">73</div><div class="qbody"><h3>Vì sao nhật ký không sửa, không xóa được, và dữ liệu nhạy cảm bị che thế nào?</h3>
+<p>Nhật ký chỉ có giá trị khi không ai xóa được dấu vết của mình. Trigger chặn mọi UPDATE và DELETE trên bảng nhật ký. Tài khoản đã có nhật ký thì không xóa được, chỉ khóa được (PROTECT).</p>
+<p>Khi ghi các thay đổi, trường nào có tên chứa password, token, secret, email, phone hoặc kết thúc bằng <code>_encrypted</code> sẽ bị thay bằng <code>***</code>.</p>
+<div class="codebox"><div class="lbl">Python + SQL</div><pre><code>SENSITIVE_KEYS = (&quot;password&quot;, &quot;token&quot;, &quot;secret&quot;, &quot;email&quot;, &quot;phone&quot;)
+MASK = &quot;***&quot;
+def _is_sensitive(key):
+    k = str(key).lower()
+    return k.endswith(&quot;_encrypted&quot;) or any(s in k for s in SENSITIVE_KEYS)
+
+-- migration 0014
+CREATE TRIGGER be02_audit_log_append_only BEFORE UPDATE OR DELETE ON inventory_auditlog
+FOR EACH ROW EXECUTE FUNCTION be02_audit_log_append_only();</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/audit.py; migrations/0014_roles_security.py</span></div>
+</div></article>
+<article class="q" id="cau-74" data-n="74"><div class="n">74</div><div class="qbody"><h3>Vì sao ghi nhật ký trong cùng transaction? Ảnh suất ăn được bảo vệ thế nào?</h3>
+<p>Ghi nhật ký <b>bên trong transaction của thao tác</b>, nên thao tác thất bại thì dòng nhật ký cũng biến mất. Nhật ký không bao giờ ghi một việc chưa xảy ra.</p>
+<p>Ảnh suất ăn được nén lại và <b>bỏ thông tin EXIF</b>, trong đó có tọa độ GPS nơi chụp. Ảnh lưu trên ổ server, <b>không có link công khai</b>: chỉ xem được khi đã đăng nhập. Trong thư gửi phụ huynh, ảnh được đính kèm trực tiếp vào thư.</p>
+<div class="codebox"><div class="lbl">Python · photo_views.py</div><pre><code>with transaction.atomic():
+    photo = meal_photos.add_photo(day_date, upload, note, request.user)
+    audit.record(request, &quot;meal_photo_add&quot;, &quot;meal_photo&quot;, photo.id, f&quot;Tải ảnh suất ăn ngày {day_date:%d/%m/%Y}&quot;)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/audit.py (docstring); photo_views.py; meal_photos.py</span></div>
+</div></article>
+</section>
+<section class="ch" id="ch8"><div class="ch-head"><div class="eyebrow">Chương 8<span class="range">Câu 75–81</span></div><h2>Gửi email và việc chạy nền</h2><p>Thư thực đơn được gửi thế nào, vì sao không gửi trùng, và vì sao cần một tiến trình chạy nền.</p></div>
+<article class="q" id="cau-75" data-n="75"><div class="n">75</div><div class="qbody"><h3>Thư được gửi bằng gì, và chế độ thử khác chế độ thật ra sao?</h3>
+<p>Thư được gửi qua <b>SMTP của Gmail</b> bằng công cụ gửi mail có sẵn của Django. Mật khẩu là <b>App Password</b> 16 ký tự, không phải mật khẩu đăng nhập Gmail. Muốn chuyển sang Amazon SES chỉ cần đổi biến môi trường.</p>
+<p><code>EMAIL_MODE=dry_run</code> chỉ ghi nhật ký, không gửi thật; dùng khi thử. <code>EMAIL_MODE=smtp</code> gửi thật, mỗi ngày tối đa 450 thư (<code>EMAIL_DAILY_LIMIT</code>), dưới mức khoảng 500 thư/ngày của Gmail.</p>
+<div class="codebox"><div class="lbl">.env.prod (mẫu)</div><pre><code>EMAIL_MODE=smtp
+EMAIL_HOST_USER=bepnhatruong@gmail.com
+EMAIL_HOST_PASSWORD=&lt;App Password 16 ký tự&gt;     # chỉ nằm trong .env.prod
+EMAIL_DAILY_LIMIT=450</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/schoolfood/settings.py (EMAIL_*); docs/SECURITY.md mục 6</span></div>
+</div></article>
+<article class="q" id="cau-76" data-n="76"><div class="n">76</div><div class="qbody"><h3>Ai quyết định lúc gửi thư? Vì sao không gửi thẳng trong yêu cầu HTTP?</h3>
+<p>Từ 01/10/2026 thư <b>không tự gửi lúc 6h30</b> nữa (<code>MENU_AUTO_SEND=false</code>). Quản lý tải ảnh suất ăn lên, xem trước thư, rồi bấm "Gửi thư cho phụ huynh".</p>
+<p>Nút bấm chỉ <b>xếp lịch</b>: API trả 202 ngay. Tiến trình nền <code>run_scheduler</code> kiểm tra mỗi 60 giây và gửi. Gửi hàng trăm thư trong một yêu cầu HTTP sẽ rất chậm, dễ quá thời gian chờ, và một lỗi giữa chừng sẽ khó biết đã gửi tới đâu.</p>
+<div class="codebox"><div class="lbl">Python · run_scheduler.py</div><pre><code>def tick(self, hour, minute):
+    if settings.MENU_AUTO_SEND and due and not NotificationLog.objects.filter(date=today, email_hash=SUMMARY).exists():
+        send_daily_menu(today)
+    for day in NotificationLog.objects.filter(email_hash=SUMMARY, status=&quot;pending&quot;, date__lte=today) \
+                                      .values_list(&quot;date&quot;, flat=True):
+        send_daily_menu(day)      # ngày Quản lý đã bấm gửi</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>management/commands/run_scheduler.py; notification_views.py (notifications_send → 202)</span></div>
+</div></article>
+<article class="q" id="cau-77" data-n="77"><div class="n">77</div><div class="qbody"><h3>Làm sao không gửi trùng thư, kể cả khi bấm hai lần hoặc chạy hai tiến trình?</h3>
+<p><b>Thứ nhất</b>, mỗi email có một dòng <code>NotificationLog</code> cho mỗi ngày (ràng buộc unique). Dòng đã ở trạng thái "đã gửi" thì lần chạy sau bỏ qua; bấm gửi lại chỉ gửi những thư còn thiếu hoặc lỗi.</p>
+<p><b>Thứ hai</b>, cả đợt gửi nằm trong khóa <code>pg_advisory_lock</code> của PostgreSQL. Hai tiến trình chạy cùng lúc thì tiến trình sau phải chờ.</p>
+<div class="codebox"><div class="lbl">Python · notifications.py</div><pre><code>LOCK_KEY = 4_200_108  # pg_advisory_lock: BE-08 gửi email thực đơn
+
+def send_daily_menu(d):
+    with db_connection.cursor() as cursor:
+        cursor.execute(&quot;SELECT pg_advisory_lock(%s)&quot;, [LOCK_KEY])
+    try:
+        return _send(d)
+    finally:
+        with db_connection.cursor() as cursor:
+            cursor.execute(&quot;SELECT pg_advisory_unlock(%s)&quot;, [LOCK_KEY])</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/notifications.py; models.py (notification_unique_per_day)</span></div>
+</div></article>
+<article class="q" id="cau-78" data-n="78"><div class="n">78</div><div class="qbody"><h3>Gửi thư bị lỗi thì sao?</h3>
+<p><b>Sai tài khoản hoặc App Password</b>: dừng cả đợt ngay, vì gửi tiếp cũng hỏng hết. Các thư còn lại được đánh dấu lỗi với lý do rõ ràng. <b>Lỗi khác</b> (một địa chỉ hỏng, mạng chập chờn): chỉ thư đó bị đánh dấu lỗi, các thư khác vẫn gửi.</p>
+<p>Câu báo lỗi lưu lại <b>không chứa địa chỉ email</b>. Quản lý thấy kết quả từng thư ở tab Thư thực đơn và bấm gửi lại phần lỗi.</p>
+<p>Chuyện thật trên production: nút Gửi thử báo lỗi. Kiểm tra trong container thì thấy mật khẩu chỉ dài 9 ký tự, trong khi App Password phải 16. Thay đúng App Password là hết lỗi.</p>
+<div class="codebox"><div class="lbl">Python · notifications.py</div><pre><code>except smtplib.SMTPAuthenticationError:
+    aborted = &quot;Sai tài khoản/App Password SMTP: dừng cả đợt.&quot;
+except (smtplib.SMTPException, OSError) as exc:
+    entry.status, entry.error = Status.FAILED, _safe_error(exc, group[&quot;email&quot;])   # xóa email khỏi câu lỗi</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/notifications.py (_send, _safe_error)</span></div>
+</div></article>
+<article class="q" id="cau-79" data-n="79"><div class="n">79</div><div class="qbody"><h3>Link hủy nhận trong thư an toàn như thế nào, khi phụ huynh không cần đăng nhập?</h3>
+<p>Link chứa một <b>mã được ký số</b> bằng SECRET_KEY. Mã chỉ chứa mã băm của email, không chứa email. Ai sửa mã đi dù một ký tự thì chữ ký sai và nhận lỗi 400; không ai tự tạo được link hủy nhận cho email của người khác.</p>
+<p>API hủy nhận được miễn CSRF vì phụ huynh không có phiên đăng nhập. Chữ ký số đã đóng vai trò bảo vệ. Thư còn có header <code>List-Unsubscribe</code> để Gmail hiện nút "Hủy đăng ký" có sẵn.</p>
+<div class="codebox"><div class="lbl">Python · mailer.py</div><pre><code>UNSUBSCRIBE_SALT = &quot;schoolfood.unsubscribe&quot;
+def unsubscribe_token(email_hash):
+    return signing.dumps({&quot;h&quot;: email_hash}, salt=UNSUBSCRIBE_SALT)
+
+def read_unsubscribe_token(token):
+    try:
+        data = signing.loads(token, salt=UNSUBSCRIBE_SALT)
+    except signing.BadSignature:
+        raise ValueError(&quot;Link hủy nhận không hợp lệ.&quot;) from None</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/mailer.py; notification_views.py (unsubscribe, @csrf_exempt)</span></div>
+</div></article>
+<article class="q" id="cau-80" data-n="80"><div class="n">80</div><div class="qbody"><h3>Email mẫu &quot;.invalid&quot; là gì, và ảnh được gắn vào thư thế nào?</h3>
+<p>Dữ liệu mẫu dùng email có đuôi <code>.invalid</code>, một tên miền được chuẩn quốc tế dành riêng để không bao giờ nhận thư. Backend <b>không bao giờ gửi</b> tới các địa chỉ này mà chỉ ghi "bỏ qua". Nhờ vậy Gmail không nhận về hàng loạt thư bị trả lại, vốn làm tài khoản bị coi là gửi rác.</p>
+<p>Ảnh suất ăn được thu nhỏ còn tối đa 1040px rồi <b>nhúng thẳng vào thư</b> (Content-ID). Phụ huynh mở thư là thấy ảnh, không cần đăng nhập và không có link ảnh công khai.</p>
+<div class="codebox"><div class="lbl">Python · notifications.py, mailer.py</div><pre><code>SAMPLE_EMAIL_SUFFIX = &quot;.invalid&quot;  # RFC 2606: tên miền không bao giờ nhận thư thật.
+
+image = MIMEImage(p[&quot;data&quot;], &quot;jpeg&quot;)
+image.add_header(&quot;Content-ID&quot;, f&quot;&lt;{p[&#x27;cid&#x27;]}&gt;&quot;)       # HTML dùng &lt;img src=&quot;cid:anh12@schoolfood&quot;&gt;
+message.mixed_subtype = &quot;related&quot;</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/notifications.py; mailer.py; meal_photos.py (email_photos)</span></div>
+</div></article>
+<article class="q" id="cau-81" data-n="81"><div class="n">81</div><div class="qbody"><h3>Vì sao không gửi thư khi đang giữ transaction của cơ sở dữ liệu?</h3>
+<p>Gửi một thư có thể mất vài giây. Nếu gửi trong lúc giữ transaction, các khóa dữ liệu bị giữ suốt thời gian đó và người khác phải chờ.</p>
+<p>Thư đã gửi đi cũng <b>không thể "hoàn tác"</b>, trong khi transaction thì có thể bị hoàn tác. Vì vậy mỗi thư chỉ ghi trạng thái vào DB trong transaction ngắn, còn việc gửi nằm ngoài. Cũng vì lý do này, file ảnh bị xóa chỉ sau khi DB đã lưu xong (<code>transaction.on_commit</code>).</p>
+<div class="codebox"><div class="lbl">Python · meal_photos.py</div><pre><code># meal_photos.delete_photo
+photo.delete()
+# Xóa file sau khi DB đã commit: rollback thì ảnh vẫn còn đủ.
+transaction.on_commit(lambda: storage.delete(name))</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>notifications.py (docstring: &quot;Không gửi bên trong transaction DB&quot;); meal_photos.py</span></div>
+</div></article>
+</section>
+<section class="ch" id="ch9"><div class="ch-head"><div class="eyebrow">Chương 9<span class="range">Câu 82–87</span></div><h2>Kiểm thử</h2><p>Test chạy ở đâu, test những gì, và vì sao test là bằng chứng chứ không phải thủ tục.</p></div>
+<article class="q" id="cau-82" data-n="82"><div class="n">82</div><div class="qbody"><h3>Test chạy trên cơ sở dữ liệu nào? Có nguy cơ xóa nhầm dữ liệu thật không?</h3>
+<p>Test chạy trên <b>PostgreSQL 17 riêng</b>, thường là một container Docker tạm. Django tạo một DB test mới rồi xóa sau khi chạy xong.</p>
+<p>Để không bao giờ chạy nhầm vào DB thật trên cloud, <code>settings.py</code> có một chốt chặn: lệnh test thấy host DB không phải máy local thì <b>từ chối chạy</b>.</p>
+<div class="codebox"><div class="lbl">Python · settings.py</div><pre><code>if &quot;test&quot; in sys.argv:
+    DATABASES[&quot;default&quot;][&quot;TEST&quot;] = {&quot;NAME&quot;: &quot;test_schoolfood_local&quot;}
+    if DATABASES[&quot;default&quot;][&quot;HOST&quot;] not in {&quot;localhost&quot;, &quot;127.0.0.1&quot;, &quot;::1&quot;, &quot;db&quot;}:
+        raise ImproperlyConfigured(&quot;Từ chối chạy test trên DB host không phải local. ...&quot;)</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/schoolfood/settings.py; CLAUDE.md §4 (lệnh tạo PostgreSQL test)</span></div>
+</div></article>
+<article class="q" id="cau-83" data-n="83"><div class="n">83</div><div class="qbody"><h3>TestCase và TransactionTestCase khác nhau thế nào, khi nào dùng cái nào?</h3>
+<p><code>TestCase</code> bọc mỗi test trong một transaction rồi hoàn tác ở cuối. Rất nhanh, dùng cho phần lớn test.</p>
+<p><code>TransactionTestCase</code> <b>lưu thật</b> vào DB. Bắt buộc dùng khi cần thấy trigger chặn sau khi lưu, hoặc khi cho <b>hai kết nối thật chạy song song</b> để kiểm tra khóa và deadlock.</p>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §5.2; test_g2.py (G2DongThoiTests); test_students_email.py (GioiHanEmailTriggerTests)</span></div>
+</div></article>
+<article class="q" id="cau-84" data-n="84"><div class="n">84</div><div class="qbody"><h3>Test đồng thời được viết như thế nào?</h3>
+<p>Mở hai luồng (thread), mỗi luồng một kết nối DB, cùng làm một việc tại cùng một thời điểm. Sau đó kiểm tra kết quả: <b>đúng một bên thành công, bên kia nhận 409</b>, và không bên nào bị treo.</p>
+<p>Các kịch bản đã test: hai người cùng duyệt một bản nhu cầu; hai phiếu nhận hàng cùng nhận một dòng đơn vượt số đặt; nhận hàng và xuất kho chạy song song.</p>
+<div class="codebox"><div class="lbl">Python · ý tưởng test_g2.py</div><pre><code>barrier = threading.Barrier(2)
+def worker():
+    barrier.wait()                       # hai luồng xuất phát cùng lúc
+    results.append(client.post(url, ...).status_code)
+threads = [threading.Thread(target=worker) for _ in range(2)]
+...
+self.assertEqual(sorted(results), [200, 409])</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/test_g2.py (G2DongThoiTests)</span></div>
+</div></article>
+<article class="q" id="cau-85" data-n="85"><div class="n">85</div><div class="qbody"><h3>Test bảo mật kiểm tra những gì?</h3>
+<p>Client test bật <b>kiểm tra CSRF</b> (<code>enforce_csrf_checks=True</code>) giống trình duyệt thật. Test ma trận quyền chạy qua mọi route. Test khóa đăng nhập sau 5 lần sai, giới hạn theo IP, phiên hết hạn sau 30 phút và 12 giờ, đặt lại mật khẩu thì phiên khác mất hiệu lực, nhật ký không sửa được.</p>
+<p>Có cả nhóm test gửi dữ liệu xấu: mảng, chuỗi "false", số float, ngày sai. Kết quả phải là 400 và DB không có gì thay đổi.</p>
+<div class="codebox"><div class="lbl">Python · test_security.py</div><pre><code>class CsrfClientMixin:
+    def csrf_client(self, user=None):
+        client = Client(enforce_csrf_checks=True)
+        if user is not None:
+            client.force_login(user)
+        client.get(&quot;/api/auth/csrf/&quot;)
+        client.csrf = client.cookies[&quot;csrftoken&quot;].value
+        return client</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/test_security.py</span></div>
+</div></article>
+<article class="q" id="cau-86" data-n="86"><div class="n">86</div><div class="qbody"><h3>Làm sao test những việc phụ thuộc giờ giấc, như gửi thư 6h30 hay &quot;từ ngày mai&quot;?</h3>
+<p>Dùng <code>mock.patch</code> để <b>giả lập đồng hồ</b> của Django, ví dụ đặt "bây giờ" là 06:29 rồi 06:31.</p>
+<p>Trigger thực đơn dùng hàm <code>be03_menu_today()</code> trong PostgreSQL. Test thay hàm này trong transaction của test (<code>dat_ngay_postgres</code>) và tự hoàn tác sau đó. Mọi chốt chặn vẫn giữ nguyên.</p>
+<div class="codebox"><div class="lbl">Python · test_students_email.py</div><pre><code>with patch(&quot;django.utils.timezone.now&quot;, return_value=BAY_GIO.replace(hour=6, minute=29)):
+    call_command(&quot;run_scheduler&quot;, &quot;--once&quot;)
+self.assertEqual(len(mail.outbox), 0)      # chưa tới giờ, chưa gửi</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/apps/inventory/test_menus.py (dat_ngay_postgres); test_students_email.py</span></div>
+</div></article>
+<article class="q" id="cau-87" data-n="87"><div class="n">87</div><div class="qbody"><h3>Trước khi báo &quot;xong&quot;, phải chạy những lệnh nào?</h3>
+<p>Backend: <code>check</code>, <code>makemigrations --check</code>, toàn bộ test trên PostgreSQL riêng. Frontend: <code>npm run build</code>. Sau đó thao tác thật bằng tài khoản Quản lý và Hiệu trưởng, và chụp ảnh màn hình 1280px và 375px làm bằng chứng.</p>
+<p>Mốc hiện tại: <b>275 test đạt</b>. Báo cáo phải ghi lệnh, ngày, commit, kết quả thật; không chép số liệu test cũ thành kết quả mới.</p>
+<div class="codebox"><div class="lbl">Lệnh</div><pre><code>python manage.py check
+python manage.py makemigrations --check --dry-run
+python manage.py test apps.inventory --noinput      # Ran 275 tests ... OK
+cd frontend &amp;&amp; npm run build</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §5.2; plan_final.md §2</span></div>
+</div></article>
+</section>
+<section class="ch" id="ch10"><div class="ch-head"><div class="eyebrow">Chương 10<span class="range">Câu 88–100</span></div><h2>Triển khai lên máy chủ và vận hành</h2><p>Hệ thống chạy trên production ra sao, bí mật được giữ ở đâu, cách deploy, sao lưu và khôi phục.</p></div>
+<article class="q" id="cau-88" data-n="88"><div class="n">88</div><div class="qbody"><h3>Kiến trúc production trông như thế nào?</h3>
+<p>Một máy <b>AWS EC2</b> (t4g.small, Sydney) chạy Docker Compose với 5 container. Người dùng vào <b>schoolfoodusth.store</b> qua Cloudflare. Cloudflare nối tới máy chủ bằng đường hầm (tunnel) do container <code>cloudflared</code> tự mở ra ngoài.</p>
+<p><code>web</code> (nginx) phục vụ giao diện và chuyển API sang <code>backend</code> (gunicorn + Django). <code>db</code> là PostgreSQL. <code>scheduler</code> chạy nền để gửi thư.</p>
+<pre class="mermaid">flowchart LR
+  U[Người dùng] --&gt;|HTTPS| CF[Cloudflare]
+  CF --&gt;|Tunnel| CD[cloudflared]
+  subgraph EC2[EC2 · Docker Compose]
+    CD --&gt; W[web: nginx]
+    W --&gt;|/api| BE[backend: gunicorn + Django]
+    BE --&gt; DB[(db: PostgreSQL 17)]
+    SC[scheduler: run_scheduler] --&gt; DB
+  end
+  SC --&gt;|SMTP| GM[Gmail]</pre>
+<div class="src"><b>Dẫn chứng</b><span>compose.prod.yaml; plan_final.md R7</span></div>
+</div></article>
+<article class="q" id="cau-89" data-n="89"><div class="n">89</div><div class="qbody"><h3>Mỗi container trong compose.prod.yaml làm gì?</h3>
+<p><b>db:</b> PostgreSQL 17, dữ liệu nằm trong volume <code>postgres_data</code>, <b>không mở cổng ra ngoài</b>. <b>backend:</b> Django chạy bằng gunicorn, ảnh lưu ở volume <code>media_data</code>. <b>scheduler:</b> cùng image với backend nhưng chạy lệnh <code>run_scheduler</code>.</p>
+<p><b>web:</b> nginx, chỉ mở cổng 8080 trên <code>127.0.0.1</code> của máy chủ. <b>cloudflared:</b> đường hầm Cloudflare. Mọi container đặt <code>restart: unless-stopped</code>, nên máy khởi động lại thì tự chạy lại.</p>
+<div class="codebox"><div class="lbl">YAML · compose.prod.yaml (rút gọn)</div><pre><code>services:
+  db:          { image: postgres:17-alpine, volumes: [postgres_data:/var/lib/postgresql/data] }
+  backend:     { image: schoolfood-backend:prod, volumes: [media_data:/app/media] }
+  scheduler:   { &lt;&lt;: *backend-runtime, command: [&quot;python&quot;, &quot;manage.py&quot;, &quot;run_scheduler&quot;] }
+  web:         { ports: [&quot;127.0.0.1:${WEB_HOST_PORT:-8080}:80&quot;] }
+  cloudflared: { image: cloudflare/cloudflared, command: tunnel --no-autoupdate run }</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>compose.prod.yaml</span></div>
+</div></article>
+<article class="q" id="cau-90" data-n="90"><div class="n">90</div><div class="qbody"><h3>Dockerfile được chia tầng (multi-stage) như thế nào, và vì sao?</h3>
+<p>Một Dockerfile dựng ra cả bốn môi trường: <code>backend</code> và <code>frontend</code> cho dev; <code>backend-prod</code> (thêm gunicorn và thu gom file tĩnh); <code>web-prod</code> (nginx chứa giao diện đã build). Image chạy thật không chứa Node hay mã nguồn frontend, nên nhỏ và gọn.</p>
+<p>Backend chạy bằng <b>user thường <code>app</code></b>, không phải root. Nếu ai đó chiếm được tiến trình web thì cũng có ít quyền trên máy hơn.</p>
+<div class="codebox"><div class="lbl">Dockerfile (rút gọn)</div><pre><code>FROM backend AS backend-prod
+RUN DEBUG=False SECRET_KEY=build-only-... python manage.py collectstatic --noinput
+RUN useradd --system --no-create-home app &amp;&amp; mkdir -p /app/media &amp;&amp; chown app /app/media
+USER app
+CMD [&quot;gunicorn&quot;, &quot;schoolfood.wsgi:application&quot;, &quot;--bind&quot;, &quot;0.0.0.0:8000&quot;, &quot;--timeout&quot;, &quot;60&quot;]
+
+FROM frontend AS frontend-build
+RUN npm run build
+FROM nginx:1.27-alpine AS web-prod
+COPY --from=frontend-build /app/dist /usr/share/nginx/html</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>Dockerfile</span></div>
+</div></article>
+<article class="q" id="cau-91" data-n="91"><div class="n">91</div><div class="qbody"><h3>Bí mật (mật khẩu DB, SECRET_KEY, khóa mã hóa) được giữ ở đâu?</h3>
+<p>Chỉ trong file <code>.env.prod</code> <b>nằm trên máy chủ</b>, không bao giờ đưa lên Git. Repo chỉ có <code>.env.prod.example</code> chứa chỗ trống để biết cần những biến nào.</p>
+<p>Compose dùng cú pháp <code>${BIEN:?thông báo}</code>: thiếu biến bắt buộc là dừng ngay kèm câu báo. Đây là lý do khi gõ lệnh compose thiếu <code>--env-file .env.prod</code>, ta thấy lỗi "Thiếu SECRET_KEY".</p>
+<div class="codebox"><div class="lbl">YAML · compose.prod.yaml</div><pre><code>environment:
+  SECRET_KEY: ${SECRET_KEY:?Thiếu SECRET_KEY}
+  ALLOWED_HOSTS: ${ALLOWED_HOSTS:?Thiếu ALLOWED_HOSTS}
+  CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:?Thiếu CSRF_TRUSTED_ORIGINS}</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>compose.prod.yaml; .env.prod.example; CLAUDE.md §5.4 (không đưa .env* lên Git)</span></div>
+</div></article>
+<article class="q" id="cau-92" data-n="92"><div class="n">92</div><div class="qbody"><h3>Vì sao dùng Cloudflare Tunnel thay vì mở cổng 80/443 trên máy chủ?</h3>
+<p>Với tunnel, container <code>cloudflared</code> <b>chủ động kết nối ra</b> Cloudflare. Máy chủ không cần mở cổng web nào ra internet: kẻ quét cổng không thấy gì để tấn công, và tấn công từ chối dịch vụ bị Cloudflare chặn trước.</p>
+<p>nginx chỉ lắng nghe trên <code>127.0.0.1</code>. Lưu ý: <code>TUNNEL_TOKEN</code> là chìa khóa của đường hầm; token từng bị lộ thì phải xoay token mới trên Cloudflare.</p>
+<div class="src"><b>Dẫn chứng</b><span>compose.prod.yaml (cloudflared, web ports 127.0.0.1); docs/SECURITY.md (xoay tunnel token)</span></div>
+</div></article>
+<article class="q" id="cau-93" data-n="93"><div class="n">93</div><div class="qbody"><h3>HTTPS được xử lý ở đâu, và Django làm sao biết yêu cầu là HTTPS?</h3>
+<p>Cloudflare giữ chứng chỉ và mã hóa HTTPS với trình duyệt. Qua tunnel, Cloudflare gửi kèm header <code>X-Forwarded-Proto: https</code>; nginx chuyển tiếp header này. Django đọc nó qua <code>SECURE_PROXY_SSL_HEADER</code>, nhờ đó mới đặt cookie Secure và chuyển HTTP sang HTTPS.</p>
+<p><b>HSTS</b> báo trình duyệt "chỉ dùng HTTPS với trang này". Giá trị ban đầu thấp (3600 giây) và tăng dần khi ổn định; không bật preload vì rất khó rút lại.</p>
+<div class="codebox"><div class="lbl">Python · settings.py</div><pre><code>SECURE_PROXY_SSL_HEADER = (&quot;HTTP_X_FORWARDED_PROTO&quot;, &quot;https&quot;)
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = int(os.getenv(&quot;SECURE_HSTS_SECONDS&quot;, &quot;3600&quot;))
+SECURE_HSTS_PRELOAD = False</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>backend/schoolfood/settings.py; deploy/nginx.conf (X-Forwarded-Proto)</span></div>
+</div></article>
+<article class="q" id="cau-94" data-n="94"><div class="n">94</div><div class="qbody"><h3>nginx làm những việc gì, và các header bảo mật có ý nghĩa gì?</h3>
+<p>nginx trả giao diện React (đường dẫn lạ thì trả <code>index.html</code> để router phía trình duyệt xử lý), chuyển <code>/api/</code> và <code>/admin/</code> sang Django, phục vụ file tĩnh và giới hạn kích thước upload 10 MB.</p>
+<p>Header bảo mật: <b>CSP</b> chỉ cho chạy script từ chính trang, chặn mã chèn từ nơi khác; <b>X-Frame-Options DENY</b> chặn trang lạ nhúng SchoolFood vào khung để lừa bấm; <b>nosniff</b> chặn trình duyệt đoán sai loại file; <b>Permissions-Policy</b> tắt camera, micro, định vị.</p>
+<div class="codebox"><div class="lbl">nginx · deploy/nginx.conf</div><pre><code>set $spa_csp &quot;default-src &#x27;self&#x27;; script-src &#x27;self&#x27;; img-src &#x27;self&#x27; data:; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;;
+              font-src &#x27;self&#x27;; connect-src &#x27;self&#x27;; frame-ancestors &#x27;none&#x27;; base-uri &#x27;self&#x27;; form-action &#x27;self&#x27;; object-src &#x27;none&#x27;&quot;;
+add_header Content-Security-Policy $spa_csp always;
+add_header X-Frame-Options &quot;DENY&quot; always;
+add_header X-Content-Type-Options &quot;nosniff&quot; always;</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>deploy/nginx.conf</span></div>
+</div></article>
+<article class="q" id="cau-95" data-n="95"><div class="n">95</div><div class="qbody"><h3>gunicorn chạy với cấu hình nào?</h3>
+<p>gunicorn chạy <b>3 worker</b> (biến <code>WEB_CONCURRENCY</code>), mỗi worker xử lý một yêu cầu tại một thời điểm, tối đa 60 giây cho một yêu cầu. Với một trường học, chừng đó là dư.</p>
+<p>Django giữ kết nối DB 60 giây (<code>CONN_MAX_AGE</code>) để không phải mở kết nối mới ở mỗi yêu cầu. Việc chậm như gửi thư được đẩy sang tiến trình nền, nên worker web không bị chiếm lâu.</p>
+<div class="codebox"><div class="lbl">Dockerfile + compose</div><pre><code>CMD [&quot;gunicorn&quot;, &quot;schoolfood.wsgi:application&quot;, &quot;--bind&quot;, &quot;0.0.0.0:8000&quot;, &quot;--access-logfile&quot;, &quot;-&quot;, &quot;--timeout&quot;, &quot;60&quot;]
+# compose.prod.yaml: WEB_CONCURRENCY: ${WEB_CONCURRENCY:-3}</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>Dockerfile; compose.prod.yaml; settings.py (CONN_MAX_AGE)</span></div>
+</div></article>
+<article class="q" id="cau-96" data-n="96"><div class="n">96</div><div class="qbody"><h3>Quy trình deploy một bản mới gồm những bước nào?</h3>
+<p>Trên máy chủ, trong thư mục <code>~/schoolfood</code>: <b>1.</b> lấy code mới của nhánh <code>dev1</code>; <b>2.</b> build image; <b>3.</b> khởi động lại container; <b>4.</b> chạy migration, có sao lưu DB ngay trước đó; <b>5.</b> kiểm tra cấu hình production; <b>6.</b> đối chiếu sổ kho.</p>
+<p>Mỗi bước nối bằng <code>&amp;&amp;</code>, nên bước nào lỗi thì dừng ngay, không chạy tiếp bước sau với trạng thái hỏng.</p>
+<div class="codebox"><div class="lbl">Lệnh · CLAUDE.md §4</div><pre><code>git pull --ff-only origin dev1 \
+  &amp;&amp; npm run ec2:build \
+  &amp;&amp; npm run ec2:up \
+  &amp;&amp; npm run ec2:migrate \
+  &amp;&amp; npm run ec2:check \
+  &amp;&amp; npm run ec2:ledger-audit</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §4; package.json (ec2:*)</span></div>
+</div></article>
+<article class="q" id="cau-97" data-n="97"><div class="n">97</div><div class="qbody"><h3>Sao lưu và khôi phục dữ liệu thế nào?</h3>
+<p>Có hai kiểu sao lưu: <b>trước mỗi lần migrate</b> (<code>ec2:migrate</code> tự gọi <code>pg_dump</code>), và <b>hằng đêm lúc 2h sáng</b> qua <code>deploy/backup.sh</code>. Script này sao lưu cả DB lẫn ảnh suất ăn, giữ 14 ngày, và kiểm tra file nén không hỏng trước khi giữ lại.</p>
+<p>Lịch hằng đêm phải được bật một lần bằng <code>npm run ec2:install-backup-cron</code>. Nên chép bản sao ra ngoài máy chủ định kỳ, vì máy hỏng thì bản sao nằm trên máy đó cũng mất.</p>
+<div class="codebox"><div class="lbl">Bash</div><pre><code># deploy/backup.sh (rút gọn)
+docker compose ... exec -T db sh -c &#x27;pg_dump -U &quot;$POSTGRES_USER&quot; -d &quot;$POSTGRES_DB&quot;&#x27; | gzip &gt; &quot;$partial_file&quot;
+gzip -t &quot;$partial_file&quot; &amp;&amp; mv &quot;$partial_file&quot; &quot;$backup_file&quot;
+docker compose ... exec -T backend tar -czf - -C /app media &gt; &quot;$media_partial&quot;
+find backups -name &#x27;schoolfood-*.sql.gz&#x27; -mmin +20160 -delete    # giữ 14 ngày
+
+# khôi phục ảnh
+docker compose ... exec -T backend tar -xzf - -C /app &lt; backups/media-&lt;ngày&gt;.tar.gz</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>deploy/backup.sh; package.json (ec2:db:backup, ec2:install-backup-cron); docs/SECURITY.md mục 12</span></div>
+</div></article>
+<article class="q" id="cau-98" data-n="98"><div class="n">98</div><div class="qbody"><h3>Sau khi deploy, kiểm tra gì và đọc log ở đâu?</h3>
+<p><code>npm run ec2:check</code> chạy <code>check --deploy</code> của Django. Hiện còn hai cảnh báo về HSTS preload và subdomain, cả hai là lựa chọn có chủ đích. <code>npm run ec2:ledger-audit</code> đối chiếu sổ kho. <code>npm run ec2:logs</code> xem 200 dòng log cuối của mọi container.</p>
+<p>Khi gặp lỗi, chẩn đoán từ log trước: lỗi 500 có traceback trong log backend; thư không gửi thì xem log scheduler. Kiểm tra cấu hình chỉ in <b>độ dài hoặc có/không</b> của bí mật, không bao giờ in giá trị.</p>
+<div class="codebox"><div class="lbl">Lệnh</div><pre><code>npm run ec2:ps        # trạng thái container
+npm run ec2:logs      # log
+docker compose --env-file .env.prod -f compose.prod.yaml logs --tail 30 scheduler
+# → &quot;Scheduler chạy: chỉ gửi khi Quản lý bấm, chế độ smtp.&quot;</code></pre></div>
+<div class="src"><b>Dẫn chứng</b><span>package.json (ec2:check, ec2:logs, ec2:ps)</span></div>
+</div></article>
+<article class="q" id="cau-99" data-n="99"><div class="n">99</div><div class="qbody"><h3>Những việc bảo mật hạ tầng nào chủ dự án phải tự làm?</h3>
+<p>Những việc liên quan tài khoản đám mây và bí mật thì <b>chỉ chủ dự án làm</b>, không giao cho người khác hay cho AI:</p>
+<p><b>1.</b> Security Group AWS: chỉ mở SSH cho IP của mình. <b>2.</b> Cloudflare Access cho <code>/admin</code> (đăng nhập bằng mã gửi qua email). <b>3.</b> Luật giới hạn tần suất đăng nhập trên Cloudflare. <b>4.</b> Xoay tunnel token đã lộ. <b>5.</b> Cất khóa mã hóa ngoài máy chủ. <b>6.</b> Tạo Gmail App Password. <b>7.</b> Bật lịch sao lưu.</p>
+<p>Dữ liệu mẫu chỉ nạp vào production khi chủ dự án yêu cầu rõ, và phải kèm cờ <code>--production</code>.</p>
+<div class="src"><b>Dẫn chứng</b><span>docs/SECURITY.md; management/commands/seed_sample.py</span></div>
+</div></article>
+<article class="q" id="cau-100" data-n="100"><div class="n">100</div><div class="qbody"><h3>Tóm lại, những nguyên tắc vàng nào giữ cho backend đúng và an toàn? Nên đọc code theo thứ tự nào?</h3>
+<p><b>Mười nguyên tắc:</b> (1) Không tin dữ liệu từ trình duyệt. (2) Tiền và số lượng dùng Decimal, làm tròn HALF_UP. (3) Mọi thay đổi tồn đi qua sổ kho chỉ-thêm. (4) Chốt trong transaction, khóa theo thứ tự cố định. (5) DB tự bảo vệ bằng ràng buộc và trigger. (6) Quyền kiểm ở decorator, có test ma trận cho mọi route. (7) Dữ liệu cá nhân giữ tối thiểu, mã hóa, có nhật ký. (8) Bí mật chỉ nằm trong biến môi trường trên máy chủ. (9) Deploy luôn sao lưu trước và kiểm tra sau. (10) Test trên PostgreSQL riêng, báo cáo bằng kết quả thật.</p>
+<p><b>Thứ tự đọc code gợi ý:</b> settings.py → urls.py → auth_views.py → http_input.py → models.py → services.py → lunch.py, menu_services.py → demand/purchase/day_services.py → crypto_fields.py, audit.py, notifications.py → test_security.py, test_g2.py → Dockerfile, compose.prod.yaml, deploy/nginx.conf.</p>
+<div class="src"><b>Dẫn chứng</b><span>CLAUDE.md §5; plan_final.md §1, §3</span></div>
+</div></article>
+</section>
+<p class="none" id="none">Không có câu nào khớp. Thử từ khóa khác, ví dụ "phiên", "trigger", "nginx".</p>
+<footer>Nguồn: mã nguồn repo <code>wtd-vg/school-food-inventory-management</code> (nhánh <code>dev1</code>), CLAUDE.md, plan_final.md, docs/SECURITY.md. Số liệu production (122 bút toán, 275 test) lấy từ lần kiểm tra ngày 01/10/2026.</footer>
+</main></div>
+<script>
+(function(){
+  var input = document.getElementById('search');
+  var count = document.getElementById('count');
+  var none = document.getElementById('none');
+  var arts = Array.prototype.slice.call(document.querySelectorAll('article.q'));
+  var secs = Array.prototype.slice.call(document.querySelectorAll('section.ch'));
+  var norm = function(s){ return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d'); };
+  var hay = arts.map(function(a){ return norm(a.textContent); });
+  function run(){
+    var q = norm(input.value.trim());
+    var words = q.split(/\s+/).filter(Boolean);
+    var shown = 0;
+    arts.forEach(function(a,i){
+      var ok = words.every(function(w){ return hay[i].indexOf(w) !== -1 || ('cau ' + a.dataset.n) === w || a.dataset.n === w; });
+      a.hidden = !ok; if (ok) shown++;
+    });
+    secs.forEach(function(s){
+      var n = s.querySelectorAll('article.q:not([hidden])').length;
+      s.hidden = n === 0;
+      var li = document.querySelector('.toc li[data-ch="' + s.id + '"]');
+      if (li){ li.classList.toggle('empty', n === 0); li.querySelector('.cc').textContent = n; }
+    });
+    count.textContent = words.length ? ('Tìm thấy ' + shown + '/100 câu') : '100 câu hỏi';
+    none.classList.toggle('show', shown === 0);
+  }
+  input.addEventListener('input', run);
+  document.addEventListener('keydown', function(e){
+    if (e.key === '/' && document.activeElement !== input){ e.preventDefault(); input.focus(); }
+    if (e.key === 'Escape' && document.activeElement === input){ input.value = ''; run(); }
+  });
+})();
+</script>
+<!--claude-mermaid-runtime-begin:3477-->
+<style>.mermaid-diagram{margin-block:4px}.mermaid-diagram svg{display:block;margin:0 auto;max-width:100%;height:auto}</style>
+<script src="/_runtime/mermaid-11.16.1.min.js"></script>
+<script>(function(){
+var CFG={"palettes":{"light":{"surface":"#f4efe4","text":"#42392e","line":"#8a7f6d","border":"#7a6c52","bg":"#fffdf8"},"dark":{"surface":"#262b34","text":"#f2f3f5","line":"#a8adb8","border":"#9aa4b8","bg":"#1f232b"}}};
+if(typeof mermaid==='undefined')return;
+var pres=Array.prototype.slice.call(document.querySelectorAll('pre.mermaid')).filter(function(p){if(p.hasAttribute('data-claude-mermaid-claimed'))return false;p.setAttribute('data-claude-mermaid-claimed','1');return true;});
+if(!pres.length)return;
+var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+var root=document.documentElement;
+var items=pres.map(function(pre){
+var mount=document.createElement('div');mount.className='mermaid-diagram';
+return {pre:pre,mount:mount,src:pre.textContent||''};
+});
+var seq=0;
+var renderGen=0;
+var lastKey='';
+function pageBg(fallback){
+var els=[document.body,document.documentElement];
+for(var i=0;i<els.length;i++){
+var c=els[i]&&getComputedStyle(els[i]).backgroundColor;
+if(c&&c!=='transparent'&&c!=='rgba(0, 0, 0, 0)')return c;
+}
+return fallback;
+}
+function render(){
+var theme=root.getAttribute('data-theme');
+var dark=theme==='dark'||(!!(mq&&mq.matches)&&theme!=='light');
+var pal=dark?CFG.palettes.dark:CFG.palettes.light;
+var bg=pageBg(pal.bg);
+var key=(dark?'d':'l')+'|'+bg;
+if(key===lastKey)return;
+lastKey=key;
+var gen=++renderGen;
+var font=getComputedStyle(document.body).fontFamily||'sans-serif';
+var nat={useMaxWidth:false};
+mermaid.initialize({
+startOnLoad:false,securityLevel:'strict',theme:'base',
+flowchart:nat,sequence:nat,er:nat,state:nat,class:nat,pie:nat,
+gantt:nat,journey:nat,timeline:nat,gitGraph:nat,mindmap:nat,xyChart:nat,
+quadrantChart:nat,sankey:nat,c4:nat,requirement:nat,block:nat,
+packet:nat,kanban:nat,architecture:nat,radar:nat,
+themeVariables:{background:bg,mainBkg:pal.surface,primaryColor:pal.surface,
+primaryTextColor:pal.text,lineColor:pal.line,primaryBorderColor:pal.border,
+nodeBorder:pal.border,clusterBorder:pal.border,edgeLabelBackground:bg,
+clusterBkg:'rgba(127,127,127,0.07)',titleColor:pal.text,
+darkMode:dark,rowOdd:bg,rowEven:'rgba(127,127,127,0.07)',
+attributeBackgroundColorOdd:bg,attributeBackgroundColorEven:'rgba(127,127,127,0.07)',
+fontSize:'16px',fontFamily:font},
+themeCSS:'.node rect, .node circle, .node polygon, .node path, .cluster rect { stroke-width: 2px; }'
+});
+items.forEach(function(it){
+var id='claude-mermaid-'+seq++;
+mermaid.render(id,it.src).then(function(r){
+if(gen!==renderGen)return;
+var prev=it.pre.previousElementSibling;
+if(prev&&prev.className==='mermaid-diagram'&&prev!==it.mount)return;
+it.mount.innerHTML=r.svg;
+if(!it.mount.parentNode)it.pre.parentNode.insertBefore(it.mount,it.pre);
+it.pre.style.display='none';
+},function(){
+var scratch=document.getElementById(id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+scratch=document.getElementById('d'+id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+if(gen!==renderGen)return;
+if(it.mount.parentNode)it.mount.parentNode.removeChild(it.mount);
+it.pre.style.display='';
+});
+});
+}
+render();
+if(mq&&mq.addEventListener)mq.addEventListener('change',render);
+if(typeof MutationObserver!=='undefined')new MutationObserver(render).observe(root,{attributes:true,attributeFilter:['data-theme']});
+})();</script>
+<!--claude-mermaid-runtime-end-->
+
+</body></html>
